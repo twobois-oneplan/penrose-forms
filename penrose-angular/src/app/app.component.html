@@ -1,0 +1,35 @@
+<h2>Person Form</h2>
+<app-form [model]="personForm"></app-form>
+
+<h2>Custom Person Form</h2>
+<form class="container">
+    <div class="form-row">
+        <app-form-group class="col-md-6" [field]="personForm.firstName"></app-form-group>
+        <app-form-group class="col-md-6" [field]="personForm.lastName"></app-form-group>
+    </div>
+
+    <app-form-group [field]="personForm.age"></app-form-group>
+    <app-form-group [field]="personForm.isNice"></app-form-group>
+
+    <button class="btn btn-primary">Save</button>
+</form>
+
+<h2>Order</h2>
+<form class="container">
+    <app-form-group [field]="orderForm.name"></app-form-group>
+    <app-form-group [field]="orderForm.description"></app-form-group>
+    <app-form-group [field]="orderForm.employee"></app-form-group>
+
+    <div class="form-row" *ngFor="let product of orderForm.products">
+        <app-form-group class="col" [field]="product.product"></app-form-group>
+        <app-form-group class="col" [field]="product.count"></app-form-group>
+    </div>
+
+    <div>
+        <button class="btn btn-primary" (click)="addOrderProduct()">Add</button>
+    </div>
+
+    <div>
+        <button class="btn btn-primary">Login</button>
+    </div>
+</form>
