@@ -10,8 +10,8 @@ import { Field } from '../../../../penrose-core';
 
             <ng-content></ng-content>
 
-            <div class="invalid-feedback" *ngIf="field.hasErrors"
-                [ngClass]="{ 'd-block': field.hasErrors }">
+            <div class="invalid-feedback" *ngIf="field.hasErrors && field.isTouched"
+                [ngClass]="{ 'd-block': field.hasErrors && field.isTouched }">
                 <div *ngFor="let error of field.errorMessages">
                     {{ error.message }}
                 </div>

@@ -16,6 +16,8 @@ export class Field<T> {
     public validators: Validator<T>[];
     public errors: {};
 
+    public _isTouched = false;
+
     constructor(config: FieldConfig<T>) {
         this._value = config.value;
 
@@ -35,6 +37,10 @@ export class Field<T> {
         return this._value;
     }
 
+    get isTouched() {
+        return this._isTouched;
+    }
+
     private validate() {
         this.errors = {};
         this.validators.forEach(validator => {
@@ -52,6 +58,10 @@ export class Field<T> {
 
     public get hasErrors(): boolean {
         return Object.keys(this.errors).length > 0;
+    }
+
+    public setTouched() {
+        this._isTouched = true;
     }
 }
 export class TextField extends Field<string> { }

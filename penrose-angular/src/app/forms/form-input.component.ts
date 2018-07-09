@@ -10,7 +10,8 @@ export interface FormInputComponent<T extends Field<any>> {
     template: `
         <label>{{ field.label }}</label>
         <input class="form-control" type="number" [(ngModel)]="field.value"
-            [ngClass]="{ 'is-invalid': field.hasErrors }"/>
+            (blur)="field.setTouched()"
+            [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }"/>
     `
 })
 export class NumberInputComponent implements FormInputComponent<NumberField> {
@@ -22,7 +23,8 @@ export class NumberInputComponent implements FormInputComponent<NumberField> {
     template: `
         <label>{{ field.label }}</label>
         <input class="form-control" type="text" [(ngModel)]="field.value"
-            [ngClass]="{ 'is-invalid': field.hasErrors }"/>
+            (blur)="field.setTouched()"
+            [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }"/>
     `
 })
 export class TextInputComponent implements FormInputComponent<TextField> {
@@ -30,11 +32,12 @@ export class TextInputComponent implements FormInputComponent<TextField> {
 }
 
 @Component({
-    selector: 'app-text-input',
+    selector: 'app-textarea-input',
     template: `
         <label>{{ field.label }}</label>
         <textarea class="form-control" [(ngModel)]="field.value"
-            [ngClass]="{ 'is-invalid': field.hasErrors }">
+            (blur)="field.setTouched()"
+            [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }">
         </textarea>
     `
 })
@@ -47,7 +50,8 @@ export class TextAreaInputComponent implements FormInputComponent<TextAreaField>
     template: `
         <label>{{ field.label }}</label>
         <input class="form-control" type="password" [(ngModel)]="field.value"
-            [ngClass]="{ 'is-invalid': field.hasErrors }"/>
+            (blur)="field.setTouched()"
+            [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }"/>
     `
 })
 export class PasswordInputComponent implements FormInputComponent<PasswordField> {
@@ -60,7 +64,8 @@ export class PasswordInputComponent implements FormInputComponent<PasswordField>
         <div class="custom-control custom-checkbox mr-sm-2">
             <input type="checkbox" class="custom-control-input" id="seas"
             [(ngModel)]="field.value"
-            [ngClass]="{ 'is-invalid': field.hasErrors }">
+            (blur)="field.setTouched()"
+            [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }">
             <label class="custom-control-label" for="seas">{{ field.label }}</label>
         </div>
     `
@@ -73,7 +78,7 @@ export class BoolInputComponent implements FormInputComponent<BoolField> {
     selector: 'app-dropdown-input',
     template: `
         <label>{{ field.label }}</label>
-        <select class="custom-select" [(ngModel)]="field.value">
+        <select class="custom-select" [(ngModel)]="field.value" (blur)="field.setTouched()">
             <option *ngFor="let option of field.options" [ngValue]="field.optionValue(option)">
                 {{field.optionLabel(option)}}
             </option>
