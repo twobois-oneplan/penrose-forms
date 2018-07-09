@@ -1,5 +1,5 @@
 import { Input, Component } from '@angular/core';
-import { Field, NumberField, TextField, BoolField, PasswordField, DropdownField } from '../../../../penrose-core';
+import { Field, FormModel } from '../../../../penrose-core';
 
 @Component({
     selector: 'app-form',
@@ -9,26 +9,10 @@ import { Field, NumberField, TextField, BoolField, PasswordField, DropdownField 
         </form>
     `
 })
-export class FormComponent {
-    @Input() model: {};
+export class FormComponent<T extends FormModel<T>> {
+    @Input() model: FormModel<T>;
 
     public get fields(): Field<any>[] {
-        return this.flattenDeep(
-            Object.keys(this.model).map(m => this.model[m])
-        );
+        return Object.keys(this.model).map(m => this.model[m]);
     }
-
-    // TODO
-    public flattenDeep(arr1: any[]) {
-        return arr1.reduce((acc, val) => Array.isArray(val)
-            ? acc.concat(this.flattenDeep(val))
-            : acc.concat(val), []);
-     }
 }
-
-// TODO
-export interface FormModel {
-    fields: Field<any>[];
-}
-
-

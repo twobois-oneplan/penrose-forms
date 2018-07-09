@@ -1,25 +1,52 @@
 import { Validator } from './validator';
 
+export type FormModel<T extends { [key: string]: any }> = {
+    [K in keyof T]?: Field<T[K]>;
+};
+
+const isDefined = value => value !== null && value !== undefined;
+
+export function setValues<T>(form: FormModel<T>, values: Partial<T>) {
+    // TODO: typing problems
+    Object
+        .entries(values)
+        .map(value => ({ key: value[0], value: value[1] }))
+        .filter(({key, value}) => isDefined(value) && isDefined(form[key]))
+        .forEach(({key, value}) => {
+            form[key].value = value;
+        });
+}
+
+export function getValues<T>(form: FormModel<T>): Partial<T> {
+    return Object
+        .entries(form)
+        .map(value => ({ key: value[0], field: value[1] }))
+        .reduce((result, {key, field}) => {
+            result[key] = (<Field<any>>field).value;
+            return result;
+        }, {});
+}
+
 export interface FieldConfig<T> {
-    value: T;
+    value?: T;
     label: string;
-    validators?: Validator<T>[];
+    validators?: Validator<Field<T>>[];
     helpText?: string;
 }
 
-export class Field<T> {
+export abstract class Field<T> {
     private _value: T;
 
     public label: string;
     public helpText: string;
 
-    public validators: Validator<T>[];
+    public validators: Validator<Field<T>>[];
     public errors: {};
 
     public _isTouched = false;
 
     constructor(config: FieldConfig<T>) {
-        this._value = config.value;
+        this._value = config.value || null; // TODO: null ok?
 
         this.label = config.label || null;
         this.helpText = config.helpText || null;
@@ -44,7 +71,7 @@ export class Field<T> {
     private validate() {
         this.errors = {};
         this.validators.forEach(validator => {
-            const isInvalid = validator[1](this.value);
+            const isInvalid = validator[1](this);
             if (isInvalid) {
                 this.errors[validator[0]] = validator[2];
             }
@@ -103,3 +130,5 @@ export class DropdownField<T, TOption> extends Field<T> {
         this.optionValue = config.optionValue;
     }
 }
+
+export class ArrayField<T extends FormModel<T>> extends Field<T[]> { }

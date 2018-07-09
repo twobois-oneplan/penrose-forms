@@ -88,3 +88,9 @@ export class BoolInputComponent implements FormInputComponent<BoolField> {
 export class DropdownInputComponent implements FormInputComponent<DropdownField<any, any>> {
     @Input() field: DropdownField<any, any>;
 }
+
+
+// TODO: add array component
+// @Comment({
+//     selector: 'app-'
+// })
