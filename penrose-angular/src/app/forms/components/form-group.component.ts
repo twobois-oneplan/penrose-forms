@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { Field } from '../../../../penrose-core';
+import { Field } from '../../../../../penrose-core';
 
 @Component({
-    selector: 'app-form-group',
+    selector: 'pen-form-group',
     template: `
         <div class="form-group">
-            <app-form-input-anchor [field]="field"></app-form-input-anchor>
+            <pen-form-input-anchor [field]="field"></pen-form-input-anchor>
             <small *ngIf="field.helpText !== null" class="form-text text-muted">{{ field.helpText }}</small>
 
             <div class="invalid-feedback" *ngIf="field.hasErrors && field.isTouched"
@@ -20,3 +20,5 @@ import { Field } from '../../../../penrose-core';
 export class FormGroupComponent<T> {
     @Input() field: Field<T>;
 }
+
+// TODO: ErrorFeedback rausziehen!

@@ -91,44 +91,6 @@ export abstract class Field<T> {
         this._isTouched = true;
     }
 }
-export class TextField extends Field<string> { }
 
-export interface TextAreaFieldConfig extends FieldConfig<string> {
-    columns?: number;
-}
-
-export class TextAreaField extends Field<string> {
-    public columns: number;
-
-    constructor(config: TextAreaFieldConfig) {
-        super(config);
-
-        this.columns = config.columns || 3;
-    }
-}
-
-export class NumberField extends Field<number> { }
-export class BoolField extends Field<boolean> { }
-export class PasswordField extends Field<string> { }
-
-export interface DropdownFieldConfig<T, TOption> extends FieldConfig<T> {
-    options: TOption[];
-    optionLabel: (value: TOption) => string;
-    optionValue: (value: TOption) => T;
-}
-
-export class DropdownField<T, TOption> extends Field<T> {
-    public options: TOption[];
-    public optionLabel: (value: TOption) => string;
-    public optionValue: (value: TOption) => T;
-
-    constructor(config: DropdownFieldConfig<T, TOption>) {
-        super(config);
-
-        this.options = config.options;
-        this.optionLabel = config.optionLabel;
-        this.optionValue = config.optionValue;
-    }
-}
-
+// TODO ?
 export class ArrayField<T extends FormModel<T>> extends Field<T[]> { }

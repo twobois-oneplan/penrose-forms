@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import { TextField, NumberField, BoolField, DropdownField, TextAreaField, ArrayField, FormModel } from '../../../penrose-core';
-import { Required, Min, Max, MustBeTrue, setValues, getValues } from '../../../penrose-core';
+import { FormModel, Required, Min, Max, MustBeTrue, setValues, getValues } from '../../../penrose-core';
+import {
+    BootstrapTextField, BootstrapNumberField, BootstrapCheckboxField, BootstrapTextareaField,
+    BootstrapDropdownField
+} from './bootstrap-forms/components';
 
 export interface PersonDto {
     firstName: string;
@@ -33,7 +36,7 @@ export interface ProductOrderDto {
 }
 
 @Component({
-    selector: 'app-root',
+    selector: 'pen-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
@@ -41,10 +44,10 @@ export class AppComponent {
 
     // TODO: add disabled state
     public personForm: FormModel<PersonDto> = {
-        firstName: new TextField({ validators: [Required], label: 'First Name' }),
-        lastName: new TextField({ validators: [Required], label: 'Last Name' }),
-        age: new NumberField({ validators: [Min(18), Max(25)], label: 'Age' }),
-        isNice: new BoolField({ validators: [MustBeTrue], label: 'Is a nice dude' }),
+        firstName: new BootstrapTextField({ validators: [Required], label: 'First Name' }),
+        lastName: new BootstrapTextField({ validators: [Required], label: 'Last Name' }),
+        age: new BootstrapNumberField({ validators: [Min(18), Max(25)], label: 'Age' }),
+        isNice: new BootstrapCheckboxField({ validators: [MustBeTrue], label: 'Is a nice dude' }),
     };
 
     constructor() {
@@ -69,9 +72,9 @@ export class AppComponent {
     ];
 
     public orderForm: FormModel<OrderDto> = {
-        name: new TextField({ value: '', label: 'Name', helpText: 'Das ist die Bestellungsnummer' }),
-        description: new TextAreaField({ value: 'Das ist eine Beschreibung', label: 'Beschreibung', validators: [Required] }),
-        employee: new DropdownField<EmployeeDto, EmployeeDto>({
+        name: new BootstrapTextField({ value: '', label: 'Name', helpText: 'Das ist die Bestellungsnummer' }),
+        description: new BootstrapTextareaField({ value: 'Das ist eine Beschreibung', label: 'Beschreibung', validators: [Required] }),
+        employee: new BootstrapDropdownField<EmployeeDto, EmployeeDto>({
             value: this.employees[0],
             options: this.employees,
             optionLabel: (m: EmployeeDto) => `${m.firstName} ${m.lastName}`,
@@ -89,14 +92,14 @@ export class AppComponent {
 
     public getProductOrderModel(product: ProductDto): FormModel<ProductOrderDto> {
         return ({
-            product: new DropdownField<number, ProductDto>({
+            product: new BootstrapDropdownField<number, ProductDto>({
                 value: product.id,
                 options: this.products,
                 optionLabel: p => p.name,
                 optionValue: p => p.id,
                 label: 'Products'
             }),
-            count: new NumberField({ value: 1, label: 'Anzahl' })
+            count: new BootstrapNumberField({ value: 1, label: 'Anzahl' })
         });
     }
 

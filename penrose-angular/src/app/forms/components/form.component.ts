@@ -1,12 +1,12 @@
 import { Input, Component } from '@angular/core';
-import { Field, FormModel } from '../../../../penrose-core';
+import { Field, FormModel } from '../../../../../penrose-core';
 
 @Component({
-    selector: 'app-form',
+    selector: 'pen-form',
     template: `
         <form>
             <div *ngIf="customLayout.childNodes.length === 0">
-                <app-form-group *ngFor="let field of fields" [field]="field"></app-form-group>
+                <pen-form-group *ngFor="let field of fields" [field]="field"></pen-form-group>
             </div>
 
             <div #customLayout>
