@@ -1,36 +1,39 @@
-<h2>Person Form</h2>
-<app-form [model]="personForm"></app-form>
-<button class="btn btn-primary" (click)="savePerson()">save</button>
+<div class="container mt-5">
+    <h2>Person Form</h2>
+    <app-form [model]="personForm"></app-form>
+    <button class="btn btn-primary" (click)="savePerson()">save</button>
+</div>
 
-<h2>Custom Person Form</h2>
-<!-- <app-form class="container" [model]="personForm">
-    <div class="form-row">
-        <app-form-group class="col-md-6" [field]="firstName"></app-form-group>
-        <app-form-group class="col-md-6" [field]="lastName"></app-form-group>
-    </div>
+<div class="container mt-5">
+    <h2>Custom Person Form</h2>
+    <app-form [model]="personForm">
+        <div class="form-row">
+            <app-form-group class="col-md-6" [field]="personForm.firstName"></app-form-group>
+            <app-form-group class="col-md-6" [field]="personForm.lastName"></app-form-group>
+        </div>
 
-    <app-form-group [field]="age"></app-form-group>
-    <app-form-group [field]="isNice"></app-form-group>
+        <app-form-group [field]="personForm.age"></app-form-group>
+        <app-form-group [field]="personForm.isNice"></app-form-group>
 
-    <button class="btn btn-primary">Save</button>
-</app-form> -->
+        <button class="btn btn-primary">Save</button>
+    </app-form>
+</div>
 
-<h2>Order</h2>
-<form class="container">
-    <app-form-group [field]="orderForm.name"></app-form-group>
-    <app-form-group [field]="orderForm.description"></app-form-group>
-    <app-form-group [field]="orderForm.employee"></app-form-group>
+<div class="container mt-5">
+    <h2>Order</h2>
+    <app-form [model]="orderForm">
+        <app-form-group [field]="orderForm.name"></app-form-group>
+        <app-form-group [field]="orderForm.description"></app-form-group>
+        <app-form-group [field]="orderForm.employee"></app-form-group>
 
-    <div class="form-row" *ngFor="let product of orderForm.products">
-        <app-form-group class="col" [field]="product.product"></app-form-group>
-        <app-form-group class="col" [field]="product.count"></app-form-group>
-    </div>
+        <div class="form-row" *ngFor="let product of orderForm.products">
+            <app-form-group class="col" [field]="product.product"></app-form-group>
+            <app-form-group class="col" [field]="product.count"></app-form-group>
+        </div>
 
-    <div>
-        <button class="btn btn-primary" (click)="addOrderProduct()">Add</button>
-    </div>
-
-    <div>
-        <button class="btn btn-primary">Login</button>
-    </div>
-</form>
+        <div>
+            <button class="btn btn-primary mr-2" (click)="addOrderProduct()">Add</button>
+            <button class="btn btn-primary">Login</button>
+        </div>
+    </app-form>
+</div>

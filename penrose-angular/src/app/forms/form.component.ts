@@ -4,8 +4,14 @@ import { Field, FormModel } from '../../../../penrose-core';
 @Component({
     selector: 'app-form',
     template: `
-        <form class="container">
-            <app-form-group *ngFor="let field of fields" [field]="field"></app-form-group>
+        <form>
+            <div *ngIf="customLayout.childNodes.length === 0">
+                <app-form-group *ngFor="let field of fields" [field]="field"></app-form-group>
+            </div>
+
+            <div #customLayout>
+                <ng-content></ng-content>
+            </div>
         </form>
     `
 })
