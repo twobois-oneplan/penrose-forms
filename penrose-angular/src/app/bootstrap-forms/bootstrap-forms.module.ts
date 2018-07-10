@@ -21,7 +21,7 @@ const formInputs = [
 ];
 
 @NgModule({
-    declarations: [...formInputs]
+    declarations: [...formInputs],
     entryComponents: [...formInputs],
     exports: [...formInputs],
     imports: [
