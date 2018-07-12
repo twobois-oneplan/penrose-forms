@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
-import { FormComponent, FormGroupComponent, FormInputAnchorComponent } from './components';
+import { FormComponent, FormGroupComponent } from './components';
 import { PenroseFormConfig, PenroseFormConfigService, PenroseFormConfigInjection } from './services/form-config.service';
 
 @NgModule({
     declarations: [
         FormComponent,
-        FormGroupComponent,
-        FormInputAnchorComponent
+        FormGroupComponent
     ],
     exports: [
         FormComponent,

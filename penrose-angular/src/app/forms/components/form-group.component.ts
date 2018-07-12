@@ -1,24 +1,31 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ComponentFactoryResolver, OnInit, ViewContainerRef, ViewChild } from '@angular/core';
 import { Field } from '../../../../../penrose-core';
+
+import { FormInputComponent } from './form-input.component';
+import { PenroseFormConfigService } from '../services';
 
 @Component({
     selector: 'pen-form-group',
-    template: `
-        <div class="form-group">
-            <pen-form-input-anchor [field]="field"></pen-form-input-anchor>
-            <small *ngIf="field.helpText !== null" class="form-text text-muted">{{ field.helpText }}</small>
-
-            <div class="invalid-feedback" *ngIf="field.hasErrors && field.isTouched"
-                [ngClass]="{ 'd-block': field.hasErrors && field.isTouched }">
-                <div *ngFor="let error of field.errorMessages">
-                    {{ error.message }}
-                </div>
-            </div>
-        </div>
-    `
+    template: `<template #fieldControl></template>`
 })
-export class FormGroupComponent<T> {
+export class FormGroupComponent<T> implements OnInit {
     @Input() field: Field<T>;
+
+    @ViewChild('fieldControl', {read: ViewContainerRef})
+    targetRef: ViewContainerRef;
+
+    constructor(
+        private componentFactoryResolver: ComponentFactoryResolver,
+        private formConfigService: PenroseFormConfigService
+    ) { }
+
+    public ngOnInit() {
+        const fieldConfig = this.formConfigService.config.mappings.find(m => m.take(this.field));
+
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(<any>fieldConfig.component);
+        const componentRef = this.targetRef.createComponent(componentFactory);
+        (<FormInputComponent<any>>componentRef.instance).field = this.field;
+    }
 }
 
 // TODO: ErrorFeedback rausziehen!

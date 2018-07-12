@@ -15,19 +15,24 @@ export class BootstrapTextareaField extends Field<string> {
         super(config);
 
         this.columns = config.columns;
-        this.rows = config.rows || 3;
+        this.rows = config.rows;
     }
 }
 
 @Component({
     selector: 'pen-bootstrap-textarea',
     template: `
-        <label>{{ field.label }}</label>
-        <textarea class="form-control" [(ngModel)]="field.value"
-            (blur)="field.setTouched()"
-            cols="{{ columns }}" rows="{{ rows }}"
-            [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }">
-        </textarea>
+        <div class="form-group">
+            <label>{{ field.label }}</label>
+            <textarea class="form-control" [(ngModel)]="field.value"
+                (blur)="field.setTouched()"
+                [attr.cols]="field.cols" [attr.rows]="field.rows"
+                [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }">
+            </textarea>
+
+            <pen-bootstrap-help-text [field]="field"></pen-bootstrap-help-text>
+            <pen-bootstrap-invalid-feedback [field]="field"></pen-bootstrap-invalid-feedback>
+        </div>
     `
 })
 export class BootstrapTextareaComponent implements FormInputComponent<BootstrapTextareaField> {

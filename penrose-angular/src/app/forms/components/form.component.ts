@@ -4,7 +4,7 @@ import { Field, FormModel } from '../../../../../penrose-core';
 @Component({
     selector: 'pen-form',
     template: `
-        <form>
+        <form novalidate>
             <div *ngIf="customLayout.childNodes.length === 0">
                 <pen-form-group *ngFor="let field of fields" [field]="field"></pen-form-group>
             </div>

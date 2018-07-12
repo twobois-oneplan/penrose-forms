@@ -8,7 +8,10 @@ import {
     BootstrapNumberInputComponent,
     BootstrapPasswordInputComponent,
     BootstrapTextInputComponent,
-    BootstrapTextareaComponent
+    BootstrapTextareaComponent,
+    BootstrapInputComponent,
+    BootstrapHelpTextComponent,
+    BootstrapInvalidFeedbackComponent
 } from './components';
 
 const formInputs = [
@@ -21,7 +24,12 @@ const formInputs = [
 ];
 
 @NgModule({
-    declarations: [...formInputs],
+    declarations: [
+        ...formInputs,
+        BootstrapInputComponent,
+        BootstrapHelpTextComponent,
+        BootstrapInvalidFeedbackComponent
+    ],
     entryComponents: [...formInputs],
     exports: [...formInputs],
     imports: [

@@ -6,12 +6,7 @@ export class BootstrapTextField extends Field<string> { }
 
 @Component({
     selector: 'pen-bootstrap-text-input',
-    template: `
-        <label>{{ field.label }}</label>
-        <input class="form-control" type="text" [(ngModel)]="field.value"
-            (blur)="field.setTouched()"
-            [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }"/>
-    `
+    template: `<pen-bootstrap-input [field]="field" type="text"></pen-bootstrap-input>`
 })
 export class BootstrapTextInputComponent implements FormInputComponent<BootstrapTextField> {
     @Input() field: BootstrapTextField;

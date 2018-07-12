@@ -73,7 +73,8 @@ export class AppComponent {
 
     public orderForm: FormModel<OrderDto> = {
         name: new BootstrapTextField({ value: '', label: 'Name', helpText: 'Das ist die Bestellungsnummer' }),
-        description: new BootstrapTextareaField({ value: 'Das ist eine Beschreibung', label: 'Beschreibung', validators: [Required] }),
+        description: new BootstrapTextareaField({ value: 'Das ist eine Beschreibung', label: 'Beschreibung',
+            validators: [Required], rows: 5 }),
         employee: new BootstrapDropdownField<EmployeeDto, EmployeeDto>({
             value: this.employees[0],
             options: this.employees,

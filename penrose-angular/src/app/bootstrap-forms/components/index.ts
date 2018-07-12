@@ -4,3 +4,6 @@ export * from './number-input.component';
 export * from './password-input.component';
 export * from './text-input.component';
 export * from './textarea.component';
+export * from './help-text.component';
+export * from './invalid-feedback.component';
+export * from './input.component';
