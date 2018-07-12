@@ -92,5 +92,50 @@ export abstract class Field<T> {
     }
 }
 
+export class TextField extends Field<string> { }
+export class PasswordField extends Field<string> { }
+
+export interface TextareaFieldConfig extends FieldConfig<string> {
+    columns?: number;
+    rows?: number;
+}
+
+export class TextareaField extends Field<string> {
+    public columns: number;
+    public rows: number;
+
+    constructor(config: TextareaFieldConfig) {
+        super(config);
+
+        this.columns = config.columns;
+        this.rows = config.rows;
+    }
+}
+
+export class NumberField extends Field<number> { }
+
+export class BoolField extends Field<boolean> { }
+
+export interface DropdownFieldConfig<T, TOption> extends FieldConfig<T> {
+    options: TOption[];
+    optionLabel: (value: TOption) => string;
+    optionValue: (value: TOption) => T;
+}
+
+export class DropdownField<T, TOption> extends Field<T> {
+    public options: TOption[];
+    public optionLabel: (value: TOption) => string;
+    public optionValue: (value: TOption) => T;
+
+    constructor(config: DropdownFieldConfig<T, TOption>) {
+        super(config);
+
+        this.options = config.options;
+        this.optionLabel = config.optionLabel;
+        this.optionValue = config.optionValue;
+    }
+}
+
+
 // TODO ?
 export class ArrayField<T extends FormModel<T>> extends Field<T[]> { }

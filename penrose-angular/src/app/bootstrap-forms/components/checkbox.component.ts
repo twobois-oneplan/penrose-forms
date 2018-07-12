@@ -1,8 +1,6 @@
 import { Input, Component } from '@angular/core';
 import { FormInputComponent } from 'src/app/forms/components';
-import { Field } from '../../../../../penrose-core';
-
-export class BootstrapCheckboxField extends Field<boolean> { }
+import { BoolField } from '../../../../../penrose-core';
 
 @Component({
     selector: 'pen-bootstrap-checkbox',
@@ -21,6 +19,6 @@ export class BootstrapCheckboxField extends Field<boolean> { }
         </div>
     `
 })
-export class BootstrapCheckboxComponent implements FormInputComponent<BootstrapCheckboxField> {
-    @Input() field: BootstrapCheckboxField; // TODO: id
+export class BootstrapCheckboxComponent implements FormInputComponent<BoolField> {
+    @Input() field: BoolField; // TODO: id
 }

@@ -1,26 +1,6 @@
 import { Input, Component } from '@angular/core';
 import { FormInputComponent } from 'src/app/forms/components';
-import { Field, FieldConfig } from '../../../../../penrose-core';
-
-export interface BootstrapDropdownFieldConfig<T, TOption> extends FieldConfig<T> {
-    options: TOption[];
-    optionLabel: (value: TOption) => string;
-    optionValue: (value: TOption) => T;
-}
-
-export class BootstrapDropdownField<T, TOption> extends Field<T> {
-    public options: TOption[];
-    public optionLabel: (value: TOption) => string;
-    public optionValue: (value: TOption) => T;
-
-    constructor(config: BootstrapDropdownFieldConfig<T, TOption>) {
-        super(config);
-
-        this.options = config.options;
-        this.optionLabel = config.optionLabel;
-        this.optionValue = config.optionValue;
-    }
-}
+import { DropdownField } from '../../../../../penrose-core';
 
 @Component({
     selector: 'pen-bootstrap-dropdown-input',
@@ -38,6 +18,6 @@ export class BootstrapDropdownField<T, TOption> extends Field<T> {
         </div>
     `
 })
-export class BootstrapDropdownComponent implements FormInputComponent<BootstrapDropdownField<any, any>> {
-    @Input() field: BootstrapDropdownField<any, any>;
+export class BootstrapDropdownComponent implements FormInputComponent<DropdownField<any, any>> {
+    @Input() field: DropdownField<any, any>;
 }

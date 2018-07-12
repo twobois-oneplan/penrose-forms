@@ -1,23 +1,6 @@
 import { Input, Component } from '@angular/core';
 import { FormInputComponent } from 'src/app/forms/components';
-import { Field, FieldConfig } from '../../../../../penrose-core';
-
-export interface BootstrapTextareaFieldConfig extends FieldConfig<string> {
-    columns?: number;
-    rows?: number;
-}
-
-export class BootstrapTextareaField extends Field<string> {
-    public columns: number;
-    public rows: number;
-
-    constructor(config: BootstrapTextareaFieldConfig) {
-        super(config);
-
-        this.columns = config.columns;
-        this.rows = config.rows;
-    }
-}
+import { TextareaField } from '../../../../../penrose-core';
 
 @Component({
     selector: 'pen-bootstrap-textarea',
@@ -35,6 +18,6 @@ export class BootstrapTextareaField extends Field<string> {
         </div>
     `
 })
-export class BootstrapTextareaComponent implements FormInputComponent<BootstrapTextareaField> {
-    @Input() field: BootstrapTextareaField;
+export class BootstrapTextareaComponent implements FormInputComponent<TextareaField> {
+    @Input() field: TextareaField;
 }

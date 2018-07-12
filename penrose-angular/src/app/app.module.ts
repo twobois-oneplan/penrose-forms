@@ -5,12 +5,15 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { PenroseFormsModule } from './forms/penrose-forms.module';
 import {
-    BootstrapCheckboxField, BootstrapCheckboxComponent,
-    BootstrapTextareaField, BootstrapTextareaComponent,
-    BootstrapTextField, BootstrapTextInputComponent,
-    BootstrapNumberField, BootstrapNumberInputComponent,
-    BootstrapPasswordField, BootstrapPasswordInputComponent,
-    BootstrapDropdownField, BootstrapDropdownComponent
+    TextField, TextareaField, NumberField, PasswordField, DropdownField, BoolField
+} from '../../../penrose-core/field';
+import {
+    BootstrapCheckboxComponent,
+    BootstrapTextareaComponent,
+    BootstrapTextInputComponent,
+    BootstrapNumberInputComponent,
+    BootstrapPasswordInputComponent,
+    BootstrapDropdownComponent
 } from './bootstrap-forms/components';
 import { PenroseBootstrapFormsModule } from './bootstrap-forms/bootstrap-forms.module';
 
@@ -24,12 +27,12 @@ import { PenroseBootstrapFormsModule } from './bootstrap-forms/bootstrap-forms.m
     PenroseBootstrapFormsModule, // Import Penrose Bootstrap Forms
     PenroseFormsModule.forRoot({ // Import Penrose Forms
         mappings: [
-            { take: f => f instanceof BootstrapTextField, component: BootstrapTextInputComponent },
-            { take: f => f instanceof BootstrapTextareaField, component: BootstrapTextareaComponent },
-            { take: f => f instanceof BootstrapNumberField, component: BootstrapNumberInputComponent },
-            { take: f => f instanceof BootstrapCheckboxField, component: BootstrapCheckboxComponent },
-            { take: f => f instanceof BootstrapPasswordField, component: BootstrapPasswordInputComponent },
-            { take: f => f instanceof BootstrapDropdownField, component: BootstrapDropdownComponent }
+            { take: f => f instanceof TextField, component: BootstrapTextInputComponent },
+            { take: f => f instanceof TextareaField, component: BootstrapTextareaComponent },
+            { take: f => f instanceof NumberField, component: BootstrapNumberInputComponent },
+            { take: f => f instanceof BoolField, component: BootstrapCheckboxComponent },
+            { take: f => f instanceof PasswordField, component: BootstrapPasswordInputComponent },
+            { take: f => f instanceof DropdownField, component: BootstrapDropdownComponent }
         ]
     })
   ],
