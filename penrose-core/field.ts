@@ -28,7 +28,7 @@ export function getValues<T>(form: FormModel<T>): Partial<T> {
 }
 
 export interface FieldConfig<T> {
-    value?: T;
+    value?: T; // TODO: optional?
     label: string;
     validators?: Validator<Field<T>>[];
     helpText?: string;
@@ -70,10 +70,10 @@ export abstract class Field<T> {
 
     private validate() {
         this.errors = {};
-        this.validators.forEach(validator => {
-            const isInvalid = validator[1](this);
+        this.validators.forEach(v => {
+            const isInvalid = !v.isValid(this);
             if (isInvalid) {
-                this.errors[validator[0]] = validator[2];
+                this.errors[v.key] = v.errorMessage;
             }
         });
     }
