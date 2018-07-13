@@ -1,5 +1,5 @@
 import { Input, Component } from '@angular/core';
-import { FormInputComponent } from 'src/app/forms/components';
+import { FieldComponent } from 'src/app/forms/components';
 import { TextareaField } from '../../../../../penrose-core';
 
 @Component({
@@ -18,6 +18,6 @@ import { TextareaField } from '../../../../../penrose-core';
         </div>
     `
 })
-export class BootstrapTextareaComponent implements FormInputComponent<TextareaField> {
-    @Input() field: TextareaField;
+export class BootstrapTextareaComponent implements FieldComponent<TextareaField> {
+    @Input() public field: TextareaField;
 }

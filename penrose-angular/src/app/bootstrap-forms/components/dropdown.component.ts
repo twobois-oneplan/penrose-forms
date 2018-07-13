@@ -1,5 +1,5 @@
 import { Input, Component } from '@angular/core';
-import { FormInputComponent } from 'src/app/forms/components';
+import { FieldComponent } from 'src/app/forms/components';
 import { DropdownField } from '../../../../../penrose-core';
 
 @Component({
@@ -18,6 +18,6 @@ import { DropdownField } from '../../../../../penrose-core';
         </div>
     `
 })
-export class BootstrapDropdownComponent implements FormInputComponent<DropdownField<any, any>> {
-    @Input() field: DropdownField<any, any>;
+export class BootstrapDropdownComponent implements FieldComponent<DropdownField<any, any>> {
+    @Input() public field: DropdownField<any, any>;
 }

@@ -1,4 +1,4 @@
-import { Field, FormModel } from "./field";
+import { Field } from "./field";
 
 export interface Validator<T extends Field<any>> {
     key: string;
@@ -14,9 +14,3 @@ export const Min = (min: number): Validator<Field<number>> => ({ key: 'min', isV
 export const Max = (max: number): Validator<Field<number>> => ({ key: 'max', isValid: (field: Field<number>) => field.value <= max, errorMessage: 'Max is ' + max });
 export const MustBeTrue: Validator<Field<boolean>> = { key: 'mustBeTrue', isValid: (field: Field<boolean>) => field.value === true, errorMessage: 'Must be true' };
 export const MustBeFalse: Validator<Field<boolean>> = { key: 'mustBeFalse', isValid: (field: Field<boolean>) => field.value === false, errorMessage: 'Must be false' };
-
-export interface GlobalValidator<T extends FormModel<T>> {
-    key: string;
-    isValid: (form: T) => boolean;
-    errorMessage: string;
-}

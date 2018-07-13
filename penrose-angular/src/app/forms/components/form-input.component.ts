@@ -1,10 +1,9 @@
-import { Field } from '../../../../../penrose-core';
+import { Field, Form } from '../../../../../penrose-core';
 
-export interface FormInputComponent<T extends Field<any>> {
+export interface FieldComponent<T extends Field<any>> {
     field: T;
 }
 
-// TODO: add array component
-// @Comment({
-//     selector: 'pen-'
-// })
+export interface FormComponent<T extends Form<any>> {
+    form: T;
+}

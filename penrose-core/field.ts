@@ -1,41 +1,14 @@
 import { Validator } from './validator';
 
-export type FormModel<T extends { [key: string]: any }> = {
-    [K in keyof T]?: Field<T[K]>;
-};
-
-const isDefined = value => value !== null && value !== undefined;
-
-export function setValues<T>(form: FormModel<T>, values: Partial<T>) {
-    // TODO: typing problems
-    Object
-        .entries(values)
-        .map(value => ({ key: value[0], value: value[1] }))
-        .filter(({key, value}) => isDefined(value) && isDefined(form[key]))
-        .forEach(({key, value}) => {
-            form[key].value = value;
-        });
-}
-
-export function getValues<T>(form: FormModel<T>): Partial<T> {
-    return Object
-        .entries(form)
-        .map(value => ({ key: value[0], field: value[1] }))
-        .reduce((result, {key, field}) => {
-            result[key] = (<Field<any>>field).value;
-            return result;
-        }, {});
-}
-
 export interface FieldConfig<T> {
-    value?: T; // TODO: optional?
+    value?: T;
     label: string;
     validators?: Validator<Field<T>>[];
     helpText?: string;
 }
 
 export abstract class Field<T> {
-    private _value: T;
+    private _value: T; // | FormModel<T>;
 
     public label: string;
     public helpText: string;
@@ -44,6 +17,8 @@ export abstract class Field<T> {
     public errors: {};
 
     public _isTouched = false;
+
+    public valueChanged: () => void = null;
 
     constructor(config: FieldConfig<T>) {
         this._value = config.value || null; // TODO: null ok?
@@ -58,9 +33,14 @@ export abstract class Field<T> {
     set value(value: T) {
         this._value = value;
         this.validate();
+
+        if (this.valueChanged !== null) {
+            this.valueChanged();
+        }
+        
     }
 
-    get value() {
+    get value(): T {
         return this._value;
     }
 
@@ -135,7 +115,3 @@ export class DropdownField<T, TOption> extends Field<T> {
         this.optionValue = config.optionValue;
     }
 }
-
-
-// TODO ?
-export class ArrayField<T extends FormModel<T>> extends Field<T[]> { }

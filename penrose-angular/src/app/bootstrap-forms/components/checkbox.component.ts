@@ -1,5 +1,5 @@
 import { Input, Component } from '@angular/core';
-import { FormInputComponent } from 'src/app/forms/components';
+import { FieldComponent } from 'src/app/forms/components';
 import { BoolField } from '../../../../../penrose-core';
 
 @Component({
@@ -19,6 +19,6 @@ import { BoolField } from '../../../../../penrose-core';
         </div>
     `
 })
-export class BootstrapCheckboxComponent implements FormInputComponent<BoolField> {
+export class BootstrapCheckboxComponent implements FieldComponent<BoolField> {
     @Input() field: BoolField; // TODO: id
 }
