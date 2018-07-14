@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { TextField, NumberField, BoolField, DropdownField, TextAreaField, ArrayField, FormModel } from '../../../penrose-core';
-import { Required, Min, Max, MustBeTrue, setValues, getValues } from '../../../penrose-core';
+import { FormModel, Required, Min, Max, MustBeTrue, setValues, getValues } from '../../../penrose-core';
+import {
+    TextField, TextareaField, NumberField, DropdownField, BoolField
+} from '../../../penrose-core/field';
 
 export interface PersonDto {
     firstName: string;
@@ -33,7 +35,7 @@ export interface ProductOrderDto {
 }
 
 @Component({
-    selector: 'app-root',
+    selector: 'pen-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
@@ -70,7 +72,8 @@ export class AppComponent {
 
     public orderForm: FormModel<OrderDto> = {
         name: new TextField({ value: '', label: 'Name', helpText: 'Das ist die Bestellungsnummer' }),
-        description: new TextAreaField({ value: 'Das ist eine Beschreibung', label: 'Beschreibung', validators: [Required] }),
+        description: new TextareaField({ value: 'Das ist eine Beschreibung', label: 'Beschreibung',
+            validators: [Required], rows: 5 }),
         employee: new DropdownField<EmployeeDto, EmployeeDto>({
             value: this.employees[0],
             options: this.employees,

@@ -25,7 +25,7 @@ export function getValues<T>(form: FormModel<T>): Partial<T> {
 }
 
 export interface FieldConfig<T> {
-    value?: T;
+    value?: T; // TODO: optional?
     label: string;
     validators?: Validator<Field<T>>[];
     helpText?: string;
@@ -67,10 +67,10 @@ export abstract class Field<T> {
 
     private validate() {
         this.errors = {};
-        this.validators.forEach(validator => {
-            const isInvalid = validator[1](this);
+        this.validators.forEach(v => {
+            const isInvalid = !v.isValid(this);
             if (isInvalid) {
-                this.errors[validator[0]] = validator[2];
+                this.errors[v.key] = v.errorMessage;
             }
         });
     }
@@ -88,25 +88,30 @@ export abstract class Field<T> {
         this._isTouched = true;
     }
 }
-export class TextField extends Field<string> { }
 
-export interface TextAreaFieldConfig extends FieldConfig<string> {
+export class TextField extends Field<string> { }
+export class PasswordField extends Field<string> { }
+
+export interface TextareaFieldConfig extends FieldConfig<string> {
     columns?: number;
+    rows?: number;
 }
 
-export class TextAreaField extends Field<string> {
+export class TextareaField extends Field<string> {
     public columns: number;
+    public rows: number;
 
-    constructor(config: TextAreaFieldConfig) {
+    constructor(config: TextareaFieldConfig) {
         super(config);
 
-        this.columns = config.columns || 3;
+        this.columns = config.columns;
+        this.rows = config.rows;
     }
 }
 
 export class NumberField extends Field<number> { }
+
 export class BoolField extends Field<boolean> { }
-export class PasswordField extends Field<string> { }
 
 export interface DropdownFieldConfig<T, TOption> extends FieldConfig<T> {
     options: TOption[];
@@ -128,4 +133,6 @@ export class DropdownField<T, TOption> extends Field<T> {
     }
 }
 
+
+// TODO ?
 export class ArrayField<T extends FormModel<T>> extends Field<T[]> { }
