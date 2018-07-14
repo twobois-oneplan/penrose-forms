@@ -11,8 +11,8 @@ export function setValues<T>(form: FormModel<T>, values: Partial<T>) {
     Object
         .entries(values)
         .map(value => ({ key: value[0], value: value[1] }))
-        .filter(({key, value}) => isDefined(value) && isDefined(form[key]))
-        .forEach(({key, value}) => {
+        .filter(({ key, value }) => isDefined(value) && isDefined(form[key]))
+        .forEach(({ key, value }) => {
             form[key].value = value;
         });
 }
@@ -20,11 +20,8 @@ export function setValues<T>(form: FormModel<T>, values: Partial<T>) {
 export function getValues<T>(form: FormModel<T>): Partial<T> {
     return Object
         .entries(form)
-        .map(value => ({ key: value[0], field: value[1] }))
-        .reduce((result, {key, field}) => {
-            result[key] = (<Field<any>>field).value;
-            return result;
-        }, {});
+        .map(value => <{ key: string, field: Field<T> }>({ key: value[0], field: value[1] }))
+        .reduce((result, { key, field }) => ({ ...result, [key]: field }), {});
 }
 
 export interface FieldConfig<T> {
