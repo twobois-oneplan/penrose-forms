@@ -6,27 +6,27 @@ export interface Type<T> extends Function {
     new (...args: any[]): T;
 }
 
-export interface FieldComponentMapping<T extends Field<any>> {
-    field: Type<T>;
-    component: Type<FieldComponent<T>>;
+export interface FieldComponentMapping {
+    field: string;
+    component: Type<FieldComponent<Field<any>>>;
 }
 
-export function bindField<T extends Field<any>, C extends FieldComponent<T>>(t: Type<T>, c: Type<C>): FieldComponentMapping<T> {
-    return (<FieldComponentMapping<T>>{ field: t, component: c });
+export function bindField<C extends FieldComponent<Field<any>>>(type: string, c: Type<C>) {
+    return { field: type, component: c };
 }
 
-export interface FormComponentMapping<T extends Form<any>> {
-    form: Type<T>;
-    component: Type<FormComponent<T>>;
+export interface FormComponentMapping {
+    form: string;
+    component: Type<FormComponent<Form<any>>>;
 }
 
-export function bindForm<T extends Form<any>, C extends FormComponent<T>>(t: Type<T>, c: Type<C>): FormComponentMapping<T> {
-    return (<FormComponentMapping<T>>{ form: t, component: c });
+export function bindForm<C extends FormComponent<Form<any>>>(t: string, c: Type<C>) {
+    return { form: t, component: c };
 }
 
 export interface PenroseFormConfig {
-    fieldMappings: FieldComponentMapping<any>[];
-    formMappings: FormComponentMapping<any>[];
+    fieldMappings: FieldComponentMapping[];
+    formMappings: FormComponentMapping[];
 }
 
 export const PenroseFormConfigInjection = new InjectionToken<PenroseFormConfig>('PenroseFormConfig');

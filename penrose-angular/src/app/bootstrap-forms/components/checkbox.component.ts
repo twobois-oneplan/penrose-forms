@@ -8,7 +8,7 @@ import { BoolField } from '../../../../../penrose-core';
         <div class="form-group">
             <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" id="seas"
-                [(ngModel)]="field.value"
+                [ngModel]="field.getValue()" (ngModelChange)="field.setValue($event)"
                 (blur)="field.setTouched()"
                 [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }">
                 <label class="custom-control-label" for="seas">{{ field.label }}</label>

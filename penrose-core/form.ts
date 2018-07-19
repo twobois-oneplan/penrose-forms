@@ -1,23 +1,28 @@
+import { Penrose } from './penrose';
 import { Field } from './field';
+import { FormArray } from './form-array';
 
-export type FormConfig<T extends { [key: string]: any }> = {
-    [K in keyof T]?: Field<T[K]> | Form<T[K]>;
+export type FormFieldsConfig<T extends { [key: string]: any }> = {
+    [K in keyof T]?: Field<T[K]> | Form<T[K]> | FormArray<T[K]>;
 };
 
-export abstract class Form<T> {
-    private _fields: FormConfig<T>;
+export interface Form<T> extends Penrose {
+    type: 'form';
+    formType: string;
+    fields: FormFieldsConfig<T>;
+}
 
-    constructor(fields: FormConfig<T>) {
-        this._fields = fields;
-    }
+export interface FormConfig<T> {
+    formType: string;
+    fields: FormFieldsConfig<T>;
+}
 
-    set fields(fields: FormConfig<T>) {
-        this._fields = fields;        
-    }
-
-    get fields(): FormConfig<T> {
-        return this._fields;
-    }
+export function createForm<T>(config: FormConfig<T>): Form<T> {
+    return {
+        type: 'form',
+        formType: config.formType,
+        fields: config.fields 
+    };
 }
 
 const isDefined = value => value !== null && value !== undefined;
@@ -29,10 +34,21 @@ export function setFormValues<T>(form: Form<T>, values: Partial<T>) {
         .map(value => ({ key: value[0], value: value[1] }))
         .filter(({key, value}) => isDefined(value) && isDefined(form.fields[key]))
         .forEach(({key, value}) => {
-            if (form.fields[key] instanceof Form) {
+            const type = form.fields[key].type;
+
+            if (type === 'form') {
                 setFormValues(form.fields[key], value);
-            } else {
-                (<Field<any>>form.fields[key]).value = value;
+            }
+            
+            if (type === 'field') {
+                const field: Field<any> = form.fields[key];
+                field.setValue(value);
+            }
+
+            if (type === 'formArray') {
+                const formArray: FormArray<any> = form.fields[key];
+                formArray.forms = (<any[]>value).map(m => formArray.formFactory());
+                formArray.forms.forEach((f, i) => setFormValues(f, value[i]));
             }
         });
 }
@@ -42,7 +58,7 @@ export function getFormValues<T>(form: Form<T>): Partial<T> {
         .entries(form.fields)
         .map(value => ({ key: value[0], field: value[1] }))
         .reduce((result, {key, field}) => {
-            result[key] = (<Field<any>>field).value;
+            result[key] = (<Field<any>>field).getValue();
             return result;
         }, {});
 }
