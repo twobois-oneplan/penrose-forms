@@ -4,7 +4,6 @@ import { Field, getErrorMessages, hasErrors } from '../../../../../penrose-core'
 @Component({
     selector: 'pen-bootstrap-invalid-feedback',
     template: `
-    {{ field.getValue() }} {{ field | json }}
     <div class="invalid-feedback" *ngIf="hasErrors && field.isTouched"
         [ngClass]="{ 'd-block': (hasErrors && field.isTouched) }">
         <div *ngFor="let error of errorMessages">
