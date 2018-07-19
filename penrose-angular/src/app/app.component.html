@@ -1,39 +1,39 @@
 <div class="container mt-5">
     <h2>Person Form</h2>
-    <pen-form [model]="personForm"></pen-form>
-    <button class="btn btn-primary" (click)="savePerson()">save</button>
+    <form novalidate>
+        <pen-form-group [field]="personForm"></pen-form-group>
+        <button class="btn btn-primary" (click)="savePerson()">save</button>
+    </form>
 </div>
 
+ 
 <div class="container mt-5">
     <h2>Custom Person Form</h2>
-    <pen-form [model]="personForm">
+    <form novalidate *ngIf="personForm.fields; let person">
         <div class="form-row">
-            <pen-form-group class="col-md-6" [field]="personForm.firstName"></pen-form-group>
-            <pen-form-group class="col-md-6" [field]="personForm.lastName"></pen-form-group>
+            <pen-form-group class="col-md-6" [field]="person.firstName"></pen-form-group>
+            <pen-form-group class="col-md-6" [field]="person.lastName"></pen-form-group>
         </div>
 
-        <pen-form-group [field]="personForm.age"></pen-form-group>
-        <pen-form-group [field]="personForm.isNice"></pen-form-group>
+        <div class="form-row">
+            <pen-form-group class="col-md-4" [field]="person.age"></pen-form-group>
+        </div>
+        
+        <pen-form-group [field]="person.isNice"></pen-form-group>
+
+        <div *ngIf="person.address.fields; let address">
+            <pen-form-group [field]="address.street"></pen-form-group>
+            <pen-form-group [field]="address.streetNumber"></pen-form-group>
+        </div>
 
         <button class="btn btn-primary">Save</button>
-    </pen-form>
+    </form>
 </div>
 
 <div class="container mt-5">
-    <h2>Order</h2>
-    <pen-form [model]="orderForm">
-        <pen-form-group [field]="orderForm.name"></pen-form-group>
-        <pen-form-group [field]="orderForm.description"></pen-form-group>
-        <pen-form-group [field]="orderForm.employee"></pen-form-group>
-
-        <div class="form-row" *ngFor="let product of orderForm.products">
-            <pen-form-group class="col" [field]="product.product"></pen-form-group>
-            <pen-form-group class="col" [field]="product.count"></pen-form-group>
-        </div>
-
-        <div>
-            <button class="btn btn-primary mr-2" (click)="addOrderProduct()">Add</button>
-            <button class="btn btn-primary">Login</button>
-        </div>
-    </pen-form>
+    <h2>Order Form</h2>
+    <form novalidate>
+        <pen-form-group [field]="orderForm"></pen-form-group>
+        <button class="btn btn-primary" (click)="savePerson()">save</button>
+    </form>
 </div>

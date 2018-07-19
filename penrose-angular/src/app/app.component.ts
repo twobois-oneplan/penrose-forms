@@ -1,14 +1,22 @@
-import { Component } from '@angular/core';
-import { FormModel, Required, Min, Max, MustBeTrue, setValues, getValues } from '../../../penrose-core';
+import { Component, Input } from '@angular/core';
+import { Required, Min, Max, MustBeTrue } from '../../../penrose-core';
 import {
-    TextField, TextareaField, NumberField, DropdownField, BoolField
+    TextField, TextareaField, NumberField, DropdownField, BoolField, Field,
 } from '../../../penrose-core/field';
+import { setFormValues, Form, getFormValues } from '../../../penrose-core/form';
+import { FormComponent } from './forms';
 
 export interface PersonDto {
     firstName: string;
     lastName: string;
     age: number;
     isNice: boolean;
+    address: AddressDto;
+}
+
+export interface AddressDto {
+    street: string;
+    streetNumber: number;
 }
 
 export interface ProductDto {
@@ -34,6 +42,12 @@ export interface ProductOrderDto {
     count: number;
 }
 
+export class PersonForm extends Form<PersonDto> { }
+export class AddressForm extends Form<AddressDto> { }
+
+export class OrderForm extends Form<OrderDto> { }
+export class ProductOrderForm extends Form<ProductOrderDto> { }
+
 @Component({
     selector: 'pen-root',
     templateUrl: './app.component.html',
@@ -42,22 +56,31 @@ export interface ProductOrderDto {
 export class AppComponent {
 
     // TODO: add disabled state
-    public personForm: FormModel<PersonDto> = {
+
+    public personForm = new PersonForm({
         firstName: new TextField({ validators: [Required], label: 'First Name' }),
         lastName: new TextField({ validators: [Required], label: 'Last Name' }),
         age: new NumberField({ validators: [Min(18), Max(25)], label: 'Age' }),
         isNice: new BoolField({ validators: [MustBeTrue], label: 'Is a nice dude' }),
-    };
+        address: new AddressForm({
+            street: new TextField({ label: 'Street' }),
+            streetNumber: new NumberField({ label: 'Street Number' }),
+        })
+    });
 
     constructor() {
         const personDto: PersonDto = {
             firstName: 'Daniel',
             lastName: 'Bauer',
             age: 23,
-            isNice: true
+            isNice: true,
+            address: {
+                street: 'Street',
+                streetNumber: 23
+            }
         };
 
-        setValues(this.personForm, personDto);
+        setFormValues(this.personForm, personDto);
     }
 
     public employees: EmployeeDto[] = [
@@ -70,7 +93,7 @@ export class AppComponent {
         { id: 2, name: 'Fanta', price: 2 }
     ];
 
-    public orderForm: FormModel<OrderDto> = {
+    public orderForm = new OrderForm({
         name: new TextField({ value: '', label: 'Name', helpText: 'Das ist die Bestellungsnummer' }),
         description: new TextareaField({ value: 'Das ist eine Beschreibung', label: 'Beschreibung',
             validators: [Required], rows: 5 }),
@@ -82,16 +105,18 @@ export class AppComponent {
             label: 'Employee',
             validators: []
         }),
-        // products: new ArrayField<FormModel<ProductOrderDto>>({ value: [], label: '' })
-    };
+        // products: [
+        //     this.getProductOrderModel(this.products[0])
+        // ]
+    });
 
     public addOrderProduct(): void {
         const product = this.products[0];
-        // this.orderForm.products.value.push(this.getProductOrderModel(product));
+        // this.orderForm.fields.products.push(this.getProductOrderModel(product));
     }
 
-    public getProductOrderModel(product: ProductDto): FormModel<ProductOrderDto> {
-        return ({
+    public getProductOrderModel(product: ProductDto): ProductOrderForm {
+        return new ProductOrderForm({
             product: new DropdownField<number, ProductDto>({
                 value: product.id,
                 options: this.products,
@@ -104,7 +129,25 @@ export class AppComponent {
     }
 
     public savePerson() {
-        const dto = getValues(this.personForm);
+        const dto = getFormValues(this.personForm);
         console.log(dto);
     }
+}
+
+export class OrderField extends Field<OrderDto> { }
+export class PersonField extends Field<PersonDto> { }
+export class AddressField extends Field<AddressDto> { }
+
+@Component({
+    selector: 'pen-address-form',
+    template: `
+        <h4>Address</h4>
+        <div class="form-row">
+            <pen-form-group class="col-md-8" [field]="form.fields.street"></pen-form-group>
+            <pen-form-group class="col-md-4" [field]="form.fields.streetNumber"></pen-form-group>
+        </div>
+    `
+})
+export class AddressFormComponent implements FormComponent<AddressForm> {
+    @Input() form: AddressForm;
 }

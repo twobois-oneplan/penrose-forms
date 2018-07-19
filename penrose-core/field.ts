@@ -25,14 +25,14 @@ export function getValues<T>(form: FormModel<T>): Partial<T> {
 }
 
 export interface FieldConfig<T> {
-    value?: T; // TODO: optional?
+    value?: T;
     label: string;
     validators?: Validator<Field<T>>[];
     helpText?: string;
 }
 
 export abstract class Field<T> {
-    private _value: T;
+    private _value: T; // | FormModel<T>;
 
     public label: string;
     public helpText: string;
@@ -41,6 +41,8 @@ export abstract class Field<T> {
     public errors: {};
 
     public _isTouched = false;
+
+    public valueChanged: () => void = null;
 
     constructor(config: FieldConfig<T>) {
         this._value = config.value || null; // TODO: null ok?
@@ -55,9 +57,14 @@ export abstract class Field<T> {
     set value(value: T) {
         this._value = value;
         this.validate();
+
+        if (this.valueChanged !== null) {
+            this.valueChanged();
+        }
+        
     }
 
-    get value() {
+    get value(): T {
         return this._value;
     }
 
@@ -132,7 +139,3 @@ export class DropdownField<T, TOption> extends Field<T> {
         this.optionValue = config.optionValue;
     }
 }
-
-
-// TODO ?
-export class ArrayField<T extends FormModel<T>> extends Field<T[]> { }
