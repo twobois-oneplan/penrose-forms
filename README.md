@@ -3,6 +3,8 @@ Experiments to make the frontend part of writing web applications easier
 
 # Penrose Forms
 
+![Logo](logo.png =200px)
+
 ## Why
 * Penrose Form is making Form Development easier and reuseable by abstracting inputs
 * Penrose is typesafe!
