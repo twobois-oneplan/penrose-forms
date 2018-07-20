@@ -3,7 +3,7 @@ Experiments to make the frontend part of writing web applications easier
 
 # Penrose Forms
 
-![Logo](logo.png =200px)
+<img src="logo.png" alt="logo" width="200" height="200">
 
 ## Why
 * Penrose Form is making Form Development easier and reuseable by abstracting inputs
