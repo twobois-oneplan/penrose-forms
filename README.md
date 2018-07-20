@@ -1,12 +1,8 @@
-# Frontend Experiments
-Experiments to make the frontend part of writing web applications easier
-
-# Penrose Forms
-
 <p align="center">
     <img src="logo.png" alt="logo" width="200">
 </p>
 
+# Penrose Forms
 ## Why
 * Penrose Form is making Form Development easier and reuseable by abstracting inputs
 * Penrose is typesafe!
