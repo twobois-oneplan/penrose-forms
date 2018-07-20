@@ -1,7 +1,7 @@
 import { Component, Input, ComponentFactoryResolver, OnInit, ViewContainerRef, ViewChild, ElementRef, Type } from '@angular/core';
 import { Field, Form } from '../../../../../penrose-core';
 
-import { FieldComponent, FormComponent } from './form-input.component';
+import { FieldComponent, FormComponent, FormArrayComponent } from './form-input.component';
 import { PenroseFormConfigService } from '../services';
 import { FormArray } from '../../../../../penrose-core/form-array';
 
@@ -31,8 +31,8 @@ export class FormGroupComponent<T> implements OnInit {
     public ngOnInit() {
         if (this.field.type === 'field') {
             const field = <Field<any>>this.field;
-
             const fieldConfig = this.formConfigService.config.fieldMappings.find(m => m.field === field.fieldType);
+
             if (fieldConfig === undefined) {
                 throw new Error(`Field '${field.fieldType}' has no input component mapped`);
             }
@@ -57,9 +57,15 @@ export class FormGroupComponent<T> implements OnInit {
 
         if (this.field.type === 'formArray') {
             const formArray = <FormArray<any>>this.field;
-            this.subFields = formArray.forms;
+            const formArrayConfig = this.formConfigService.config.formArrayMappings.find(m => m.formArray === formArray.formArrayType);
 
-            // TODO: Add FormArrayConfig (Custom Templates :D)
+            if (formArrayConfig === undefined) {
+                this.subFields = formArray.forms;
+            } else {
+                const componentFactory = this.componentFactoryResolver.resolveComponentFactory(<any>formArrayConfig.component);
+                const componentRef = this.targetRef.createComponent(componentFactory);
+                (<FormArrayComponent<any>>componentRef.instance).formArray = formArray;
+            }
         }
     }
 }

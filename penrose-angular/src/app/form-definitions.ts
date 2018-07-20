@@ -3,7 +3,7 @@ import {
      createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField
 } from '../../../penrose-core/field';
 import { Form, createForm } from '../../../penrose-core/form';
-import { createFormArray } from '../../../penrose-core/form-array';
+import { FormArray, createFormArray } from '../../../penrose-core/form-array';
 
 /* Person */
 export interface PersonDto {
@@ -71,17 +71,19 @@ export const createOrderForm = (employees: EmployeeDto[], products: ProductDto[]
             name: createTextField({ label: 'Name', helpText: 'Das ist die Bestellungsnummer' }),
             description: createTextareaField({ label: 'Beschreibung',
                 validators: [Required], rows: 5 }),
-            employee: createDropdownField<EmployeeDto, EmployeeDto>({
-                options: employees,
-                optionLabel: (m: EmployeeDto) => `${m.firstName} ${m.lastName}`,
-                optionValue: e => e,
-                label: 'Employee',
-                validators: []
-            }),
-            products: createFormArray({
-                formFactory: () => createProductOrderForm(products)
-            })
+            employee: createEmployeeDropdownField(employees),
+            products: createProductOrderFormArray(products)
         }
+    });
+};
+
+export const createEmployeeDropdownField = (employees: EmployeeDto[]) => {
+    return createDropdownField<EmployeeDto, EmployeeDto>({
+        options: employees,
+        optionLabel: (m: EmployeeDto) => `${m.firstName} ${m.lastName}`,
+        optionValue: e => e,
+        label: 'Employee',
+        validators: [] // TODO: test validators
     });
 };
 
@@ -90,6 +92,13 @@ export interface ProductOrderDto {
     product: number;
     count: number;
 }
+
+export interface ProductOrderFormArray extends FormArray<ProductOrderDto> { }
+export const createProductOrderFormArray = (products: ProductDto[]) => {
+    return createFormArray('productOrderList', {
+            formFactory: () => createProductOrderForm(products)
+        });
+};
 
 export interface ProductOrderForm extends Form<ProductOrderDto> { }
 export const createProductOrderForm = (products: ProductDto[]): ProductOrderForm => {

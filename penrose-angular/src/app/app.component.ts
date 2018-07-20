@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { setFormValues, getFormValues } from '../../../penrose-core/form';
-import { FormComponent } from './forms';
+import { FormComponent, FormArrayComponent } from './forms';
 import {
     PersonDto, createPersonForm, PersonForm, EmployeeDto,
-    ProductDto, OrderForm, AddressForm, createOrderForm, OrderDto
+    ProductDto, OrderForm, AddressForm, createOrderForm, OrderDto, ProductOrderDto
 } from './form-definitions';
+import { FormArray } from '../../../penrose-core';
 
 @Component({
     selector: 'pen-root',

@@ -18,6 +18,9 @@ import { PenroseFormConfig, PenroseFormConfigService, PenroseFormConfigInjection
 })
 export class PenroseFormsModule {
     static forRoot(config: PenroseFormConfig): ModuleWithProviders {
+        config.formMappings = config.formMappings || [];
+        config.formArrayMappings = config.formArrayMappings || [];
+
         return {
             ngModule: PenroseFormsModule,
             providers: [

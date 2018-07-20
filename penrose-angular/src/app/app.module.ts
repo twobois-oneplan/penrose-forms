@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
 import { AppComponent, AddressFormComponent } from './app.component';
-import { PenroseFormsModule } from './forms/penrose-forms.module';
 import {
     TextField, TextareaField, NumberField, PasswordField, DropdownField, BoolField, Field
 } from '../../../penrose-core/field';
@@ -15,8 +14,9 @@ import {
     BootstrapPasswordInputComponent,
     BootstrapDropdownComponent
 } from './bootstrap-forms/components';
+import { bindFormArray, bindForm, bindField } from './forms';
+import { PenroseFormsModule } from './forms/penrose-forms.module';
 import { PenroseBootstrapFormsModule } from './bootstrap-forms/bootstrap-forms.module';
-import { bindField, bindForm } from './forms';
 import { AddressFormType } from './form-definitions';
 
 const customInputs = [
@@ -34,7 +34,7 @@ const customInputs = [
     PenroseBootstrapFormsModule, // Import Penrose Bootstrap Forms
     PenroseFormsModule.forRoot({ // Import Penrose Forms
         fieldMappings: [
-            bindField('text', BootstrapTextInputComponent), // TODO: strings as consts
+            bindField('text', BootstrapTextInputComponent), // TODO: strings as consts?
             bindField('textarea', BootstrapTextareaComponent),
             bindField('number', BootstrapNumberInputComponent),
             bindField('bool', BootstrapCheckboxComponent),
@@ -43,7 +43,11 @@ const customInputs = [
         ],
         formMappings: [
             bindForm(AddressFormType, AddressFormComponent)
-        ]
+        ],
+        // TODO: create example for FormArrays
+        // formArrayMappings: [
+        //     bindFormArray('productOrderList', ProductOrderListComponent)
+        // ]
     })
   ],
   providers: [],
