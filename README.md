@@ -3,7 +3,9 @@ Experiments to make the frontend part of writing web applications easier
 
 # Penrose Forms
 
-<img src="logo.png" alt="logo" width="200" height="200">
+<div style="text-align: center">
+    <img src="logo.png" alt="logo" width="200">
+</div>
 
 ## Why
 * Penrose Form is making Form Development easier and reuseable by abstracting inputs
