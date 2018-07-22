@@ -1,4 +1,5 @@
 import { Validator } from './validator';
+import { Form } from '.';
 
 export interface FieldConfig<T> {
     value?: T;
@@ -37,7 +38,7 @@ export abstract class Field<T> {
         if (this.valueChanged !== null) {
             this.valueChanged();
         }
-        
+
     }
 
     get value(): T {
@@ -113,5 +114,15 @@ export class DropdownField<T, TOption> extends Field<T> {
         this.options = config.options;
         this.optionLabel = config.optionLabel;
         this.optionValue = config.optionValue;
+    }
+}
+
+export interface ArrayFieldConfig<T> extends FieldConfig<T[]> {
+    fieldsFactory: (o: T) => Field<T> | Form<T>;
+}
+
+export class ArrayField<T> extends Field<T[]> {
+    constructor(config: ArrayFieldConfig<T>) {
+        super(config);
     }
 }
