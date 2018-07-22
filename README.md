@@ -4,16 +4,16 @@
 
 # Penrose Forms
 ## Why
-* Penrose Form is making Form Development easier and reuseable by abstracting inputs
-* Penrose is typesafe!
+* Penrose Forms is making Form Development easier and makes forms reuseable by abstracting inputs
+* Penrose is *typesafe*!
 * Existing ways cannot be abstracted or are not dynamic enough
-* Plattform indepented: the core is just typescript code
+* Platform independent: the core is just TypeScript code
 
 ### Template Driven Forms
-* 👎 Lots of HTML code to write
-* 👎 Incosistent because people forget to set aria props or validation styles
-* 👎 Custom Validators are much more complex than they have to be (Directives)
-* 👎 Global Validators not really possible
+* 👎 Lots of HTML to write
+* 👎 Incosistent, because people tend forget to set aria props or validation styles
+* 👎 Custom Validators are way more complex than they have to be (Directives)
+* 👎 Global Validators are not really possible
 * 👎 Template Driven Inputs cannot be abstracted without passing many bindings
 * 👎 Name attribute has to be set and nobody knows why
 * 👎 Cannot be tested
