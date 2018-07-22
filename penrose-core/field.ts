@@ -1,5 +1,5 @@
 import { Validator } from './validator';
-import { Form } from '.';
+import { Penrose } from './penrose';
 
 export interface FieldConfig<T> {
     value?: T;
@@ -8,94 +8,105 @@ export interface FieldConfig<T> {
     helpText?: string;
 }
 
-export abstract class Field<T> {
-    private _value: T; // | FormModel<T>;
+export interface Field<T> extends Penrose {
+    type: 'field';
+    fieldType: string; // TODO: is des leiwaund?
 
-    public label: string;
-    public helpText: string;
+    getValue: () => T;
+    setValue: (value: T) => void;
 
-    public validators: Validator<Field<T>>[];
-    public errors: {};
+    label: string;
+    helpText: string;
 
-    public _isTouched = false;
+    validators: Validator<Field<T>>[];
+    validate: () => void;
 
-    public valueChanged: () => void = null;
+    errors: Object;
 
-    constructor(config: FieldConfig<T>) {
-        this._value = config.value || null; // TODO: null ok?
-
-        this.label = config.label || null;
-        this.helpText = config.helpText || null;
-
-        this.validators = config.validators || [];
-        this.validate();
-    }
-
-    set value(value: T) {
-        this._value = value;
-        this.validate();
-
-        if (this.valueChanged !== null) {
-            this.valueChanged();
-        }
-
-    }
-
-    get value(): T {
-        return this._value;
-    }
-
-    get isTouched() {
-        return this._isTouched;
-    }
-
-    private validate() {
-        this.errors = {};
-        this.validators.forEach(v => {
-            const isInvalid = !v.isValid(this);
-            if (isInvalid) {
-                this.errors[v.key] = v.errorMessage;
-            }
-        });
-    }
-
-    public get errorMessages(): any[] {
-        return Object.keys(this.errors)
-            .map(m => ({ identifier: m, message: this.errors[m] }));
-    }
-
-    public get hasErrors(): boolean {
-        return Object.keys(this.errors).length > 0;
-    }
-
-    public setTouched() {
-        this._isTouched = true;
-    }
+    isTouched: boolean;
 }
 
-export class TextField extends Field<string> { }
-export class PasswordField extends Field<string> { }
+// TODO: fieldType als parameter oder in die config?
+export function createField<T>(fieldType: string, config: FieldConfig<T>): Field<T> {
+    let _value = config.value || null; // TODO: null ok?
+
+    const field: Field<T> = {
+        type: 'field',
+        fieldType: fieldType,
+
+        getValue: () => _value,
+        setValue: null,
+
+        label: config.label || null,
+        helpText: config.helpText || null,
+
+        validators: config.validators || [],
+        validate: null,
+
+        errors: {},
+
+        isTouched: false
+    };
+
+    field.validate = () => field.errors = validateField(field);
+    field.setValue = (value: T) => {
+        _value = value;
+        field.validate();
+    };
+
+    return field;
+}
+
+export function hasErrors(field: Field<any>): boolean {
+    return Object.keys(field.errors).length > 0;
+}
+
+export function getErrorMessages(field: Field<any>) {
+    return Object.keys(field.errors)
+        .map(m => ({ identifier: m, message: field.errors[m] }));
+}
+
+export function validateField(field: Field<any>): Object {
+    let errors = {};
+    field.validators.forEach(v => {
+        const isInvalid = !v.isValid(field);
+        if (isInvalid) {
+            errors[v.key] = v.errorMessage;
+        }
+    });
+
+    return errors;
+}
+
+export interface TextField extends Field<string> { }
+export const createTextField = (config: FieldConfig<string>): TextField => createField('text', config);
+
+export interface PasswordField extends Field<string> { }
+export const createPasswordField = (config: FieldConfig<string>): PasswordField => createField('password', config);
 
 export interface TextareaFieldConfig extends FieldConfig<string> {
     columns?: number;
     rows?: number;
 }
 
-export class TextareaField extends Field<string> {
-    public columns: number;
-    public rows: number;
-
-    constructor(config: TextareaFieldConfig) {
-        super(config);
-
-        this.columns = config.columns;
-        this.rows = config.rows;
-    }
+export interface TextareaField extends Field<string> {
+    columns: number;
+    rows: number;
 }
 
-export class NumberField extends Field<number> { }
+export function createTextareaField(config: TextareaFieldConfig): TextareaField {
+    return {
+        ...createField('textarea', config),
+        columns: config.columns,
+        rows: config.rows
+    };
+}
 
-export class BoolField extends Field<boolean> { }
+export interface NumberField extends Field<number> { }
+export const createNumberField = (config: FieldConfig<number>): NumberField => createField('number', config);
+
+export interface BoolField extends Field<boolean> { }
+export const createBoolField = (config: FieldConfig<boolean>): BoolField => createField('bool', config);
 
 export interface DropdownFieldConfig<T, TOption> extends FieldConfig<T> {
     options: TOption[];
@@ -103,18 +114,19 @@ export interface DropdownFieldConfig<T, TOption> extends FieldConfig<T> {
     optionValue: (value: TOption) => T;
 }
 
-export class DropdownField<T, TOption> extends Field<T> {
-    public options: TOption[];
-    public optionLabel: (value: TOption) => string;
-    public optionValue: (value: TOption) => T;
+export interface DropdownField<T, TOption> extends Field<T> {
+    options: TOption[];
+    optionLabel: (value: TOption) => string;
+    optionValue: (value: TOption) => T;
+}
 
-    constructor(config: DropdownFieldConfig<T, TOption>) {
-        super(config);
-
-        this.options = config.options;
-        this.optionLabel = config.optionLabel;
-        this.optionValue = config.optionValue;
-    }
+export function createDropdownField<T, TOption>(config: DropdownFieldConfig<T, TOption>): DropdownField<T, TOption> {
+    return {
+        ...createField('dropdown', config),
+        options: config.options,
+        optionLabel: config.optionLabel,
+        optionValue: config.optionValue
+    };
 }
 
 export interface ArrayFieldConfig<T> extends FieldConfig<T[]> {

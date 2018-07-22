@@ -1,32 +1,47 @@
 import { InjectionToken, Inject, Injectable } from '@angular/core';
-import { FieldComponent, FormComponent } from '..';
-import { Field, Form } from '../../../../../penrose-core';
+import { FieldComponent, FormComponent, FormArrayComponent } from '..';
+import { Field, Form, FormArray } from '../../../../../penrose-core';
 
+// TODO: is this needed?
 export interface Type<T> extends Function {
     new (...args: any[]): T;
 }
 
-export interface FieldComponentMapping<T extends Field<any>> {
-    field: Type<T>;
-    component: Type<FieldComponent<T>>;
+/* Field Mappings */
+export interface FieldComponentMapping {
+    field: string;
+    component: Type<FieldComponent<Field<any>>>;
 }
 
-export function bindField<T extends Field<any>, C extends FieldComponent<T>>(t: Type<T>, c: Type<C>): FieldComponentMapping<T> {
-    return (<FieldComponentMapping<T>>{ field: t, component: c });
+export function bindField<C extends FieldComponent<Field<any>>>(type: string, c: Type<C>): FieldComponentMapping {
+    return { field: type, component: c };
 }
 
-export interface FormComponentMapping<T extends Form<any>> {
-    form: Type<T>;
-    component: Type<FormComponent<T>>;
+/* Form Mappings */
+export interface FormComponentMapping {
+    form: string;
+    component: Type<FormComponent<Form<any>>>;
 }
 
-export function bindForm<T extends Form<any>, C extends FormComponent<T>>(t: Type<T>, c: Type<C>): FormComponentMapping<T> {
-    return (<FormComponentMapping<T>>{ form: t, component: c });
+export function bindForm<C extends FormComponent<Form<any>>>(t: string, c: Type<C>): FormComponentMapping {
+    return { form: t, component: c };
 }
 
+/* Form Array Mappings */
+export interface FormArrayComponentMapping {
+    formArray: string;
+    component: Type<FormArrayComponent<FormArray<any>>>;
+}
+
+export function bindFormArray<C extends FormArrayComponent<FormArray<any>>>(t: string, c: Type<C>): FormArrayComponentMapping {
+    return { formArray: t, component: c };
+}
+
+/* Penrose Config */
 export interface PenroseFormConfig {
-    fieldMappings: FieldComponentMapping<any>[];
-    formMappings: FormComponentMapping<any>[];
+    fieldMappings: FieldComponentMapping[];
+    formMappings?: FormComponentMapping[];
+    formArrayMappings?: FormArrayComponentMapping[];
 }
 
 export const PenroseFormConfigInjection = new InjectionToken<PenroseFormConfig>('PenroseFormConfig');

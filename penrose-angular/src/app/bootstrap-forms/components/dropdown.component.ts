@@ -2,12 +2,15 @@ import { Input, Component } from '@angular/core';
 import { FieldComponent } from 'src/app/forms/components';
 import { DropdownField } from '../../../../../penrose-core';
 
+// TODO: show error state is not implemented!
 @Component({
     selector: 'pen-bootstrap-dropdown-input',
     template: `
         <div class="form-group">
             <label>{{ field.label }}</label>
-            <select class="custom-select" [(ngModel)]="field.value" (blur)="field.setTouched()">
+            <select class="custom-select"
+                [ngModel]="field.getValue()" (ngModelChange)="field.setValue($event)"
+                (blur)="field.isTouched = true">
                 <option *ngFor="let option of field.options" [ngValue]="field.optionValue(option)">
                     {{field.optionLabel(option)}}
                 </option>

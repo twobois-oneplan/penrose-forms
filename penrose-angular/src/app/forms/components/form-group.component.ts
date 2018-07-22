@@ -1,8 +1,9 @@
 import { Component, Input, ComponentFactoryResolver, OnInit, ViewContainerRef, ViewChild, ElementRef, Type } from '@angular/core';
 import { Field, Form } from '../../../../../penrose-core';
 
-import { FieldComponent, FormComponent } from './form-input.component';
+import { FieldComponent, FormComponent, FormArrayComponent } from './form-input.component';
 import { PenroseFormConfigService } from '../services';
+import { FormArray } from '../../../../../penrose-core/form-array';
 
 @Component({
     selector: 'pen-form-group',
@@ -15,7 +16,7 @@ import { PenroseFormConfigService } from '../services';
     `
 })
 export class FormGroupComponent<T> implements OnInit {
-    @Input() field: Field<T> | Form<T>;
+    @Input() field: Field<T> | Form<T> | FormArray<T>;
 
     public subFields = null;
 
@@ -28,27 +29,42 @@ export class FormGroupComponent<T> implements OnInit {
     ) { }
 
     public ngOnInit() {
-        if (this.field instanceof Field) {
-            const fieldConfig = this.formConfigService.config.fieldMappings.find(m => m.field.name === this.field.constructor.name);
+        if (this.field.type === 'field') {
+            const field = <Field<any>>this.field;
+            const fieldConfig = this.formConfigService.config.fieldMappings.find(m => m.field === field.fieldType);
+
             if (fieldConfig === undefined) {
-                throw new Error(`Field '${this.field.constructor.name}' has no input component mapped`);
+                throw new Error(`Field '${field.fieldType}' has no input component mapped`);
             }
 
             const componentFactory = this.componentFactoryResolver.resolveComponentFactory(<any>fieldConfig.component);
             const componentRef = this.targetRef.createComponent(componentFactory);
-            (<FieldComponent<any>>componentRef.instance).field = this.field;
+            (<FieldComponent<any>>componentRef.instance).field = field;
         }
 
-        if (this.field instanceof Form) {
-            const formConfig = this.formConfigService.config.formMappings.find(m => m.form.name === this.field.constructor.name);
+        if (this.field.type === 'form') {
             const form = <Form<any>>this.field;
+            const formConfig = this.formConfigService.config.formMappings.find(m => m.form === form.formType);
 
             if (formConfig === undefined) {
                 this.subFields = Object.keys(form.fields).map(m => form.fields[m]);
             } else {
                 const componentFactory = this.componentFactoryResolver.resolveComponentFactory(<any>formConfig.component);
                 const componentRef = this.targetRef.createComponent(componentFactory);
-                (<FormComponent<any>>componentRef.instance).form = this.field;
+                (<FormComponent<any>>componentRef.instance).form = form;
+            }
+        }
+
+        if (this.field.type === 'formArray') {
+            const formArray = <FormArray<any>>this.field;
+            const formArrayConfig = this.formConfigService.config.formArrayMappings.find(m => m.formArray === formArray.formArrayType);
+
+            if (formArrayConfig === undefined) {
+                this.subFields = formArray.forms;
+            } else {
+                const componentFactory = this.componentFactoryResolver.resolveComponentFactory(<any>formArrayConfig.component);
+                const componentRef = this.targetRef.createComponent(componentFactory);
+                (<FormArrayComponent<any>>componentRef.instance).formArray = formArray;
             }
         }
     }
