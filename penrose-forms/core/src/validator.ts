@@ -1,12 +1,12 @@
 import { Field } from "./field";
 
 export interface Validator<T extends Field<any>> {
-    key: string;
-    isValid: (field: T) => boolean;
-    errorMessage: string;
+	key: string;
+	isValid: (field: T) => boolean;
+	errorMessage: string;
 }
 
-// TODO: Null checks?
+// TODO: Null checks?: should not be necessary with strictNullChecks enabled
 export const Required: Validator<Field<string>> = { key: 'required', isValid: (field: Field<string>) => field.getValue() !== null && field.getValue().length !== 0, errorMessage: 'FieldIsRequired' };
 export const MinLength = (minLength: number) => ({ key: 'minLength', isValid: (field) => field.value.length >= minLength, errorMessage: 'Min Length' });
 export const MaxLength = (maxLength: number) => ({ key: 'maxLength', isValid: (field) => field.value.length <= maxLength, errorMessage: 'Max Length' });

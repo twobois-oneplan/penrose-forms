@@ -1,81 +1,87 @@
 import { Validator } from './validator';
 import { Penrose } from './penrose';
+import { Form } from '.';
 
 export interface FieldConfig<T> {
-    value?: T;
-    label: string;
-    validators?: Validator<Field<T>>[];
-    helpText?: string;
+	value: T;
+	label: string;
+	validators?: Validator<Field<T>>[];
+	helpText?: string;
+}
+
+interface Value<T> {
+	get: () => T;
+	set: (value: T) => void;
 }
 
 export interface Field<T> extends Penrose {
-    type: 'field';
-    fieldType: string; // TODO: is des leiwaund?
+	type: 'field'; // TODO: necessary
+	fieldType: string; // TODO: is des leiwaund?
 
-    getValue: () => T;
-    setValue: (value: T) => void;
+	value: Value<T>;
 
-    label: string;
-    helpText: string;
+	label: string;
+	helpText: string | null;
 
-    validators: Validator<Field<T>>[];
-    validate: () => void;
+	validators: Validator<Field<T>>[];
+	validate: () => void;
 
-    errors: Object;
+	errors: Object;
 
-    isTouched: boolean;
+	isTouched: boolean;
 }
 
 // TODO: fieldType als parameter oder in die config?
 export function createField<T>(fieldType: string, config: FieldConfig<T>): Field<T> {
-    let _value = config.value || null; // TODO: null ok?
+	let _value = config.value;
 
-    const field: Field<T> = {
-        type: 'field',
-        fieldType: fieldType,
+	const validate = () => field.errors = validateField(field);
 
-        getValue: () => _value,
-        setValue: null,
+	const field: Field<T> = {
+		type: 'field',
+		fieldType: fieldType,
 
-        label: config.label || null,
-        helpText: config.helpText || null,
+		value: {
+			get: () => _value,
+			set: (value: T) => {
+				_value = value;
+				validate();
+			}
+		},
 
-        validators: config.validators || [],
-        validate: null,
+		label: config.label,
+		helpText: config.helpText || null,
 
-        errors: {},
+		validators: config.validators || [],
+		validate: validate,
 
-        isTouched: false
-    };
+		errors: {},
 
-    field.validate = () => field.errors = validateField(field);
-    field.setValue = (value: T) => {
-        _value = value;
-        field.validate();
-    };
+		isTouched: false
+	};
 
-    return field;
+	return field;
 }
 
 export function hasErrors(field: Field<any>): boolean {
-    return Object.keys(field.errors).length > 0;
+	return Object.keys(field.errors).length > 0;
 }
 
 export function getErrorMessages(field: Field<any>) {
-    return Object.keys(field.errors)
-        .map(m => ({ identifier: m, message: field.errors[m] }));
+	return Object.keys(field.errors)
+		.map(m => ({ identifier: m, message: field.errors[m] }));
 }
 
 export function validateField(field: Field<any>): Object {
-    let errors = {};
-    field.validators.forEach(v => {
-        const isInvalid = !v.isValid(field);
-        if (isInvalid) {
-            errors[v.key] = v.errorMessage;
-        }
-    });
+	let errors = {};
+	field.validators.forEach(v => {
+		const isInvalid = !v.isValid(field);
+		if (isInvalid) {
+			errors[v.key] = v.errorMessage;
+		}
+	});
 
-    return errors;
+	return errors;
 }
 
 export interface TextField extends Field<string> { }
@@ -85,21 +91,21 @@ export interface PasswordField extends Field<string> { }
 export const createPasswordField = (config: FieldConfig<string>): PasswordField => createField('password', config);
 
 export interface TextareaFieldConfig extends FieldConfig<string> {
-    columns?: number;
-    rows?: number;
+	columns?: number;
+	rows?: number;
 }
 
 export interface TextareaField extends Field<string> {
-    columns: number;
-    rows: number;
+	columns?: number;
+	rows?: number;
 }
 
 export function createTextareaField(config: TextareaFieldConfig): TextareaField {
-    return {
-        ...createField('textarea', config),
-        columns: config.columns,
-        rows: config.rows
-    };
+	return {
+		...createField('textarea', config),
+		columns: config.columns,
+		rows: config.rows
+	};
 }
 
 export interface NumberField extends Field<number> { }
@@ -109,32 +115,43 @@ export interface BoolField extends Field<boolean> { }
 export const createBoolField = (config: FieldConfig<boolean>): BoolField => createField('bool', config);
 
 export interface DropdownFieldConfig<T, TOption> extends FieldConfig<T> {
-    options: TOption[];
-    optionLabel: (value: TOption) => string;
-    optionValue: (value: TOption) => T;
+	options: TOption[];
+	optionLabel: (value: TOption) => string;
+	optionValue: (value: TOption) => T;
 }
 
 export interface DropdownField<T, TOption> extends Field<T> {
-    options: TOption[];
-    optionLabel: (value: TOption) => string;
-    optionValue: (value: TOption) => T;
+	options: TOption[];
+	optionLabel: (value: TOption) => string;
+	optionValue: (value: TOption) => T;
 }
 
-export function createDropdownField<T, TOption>(config: DropdownFieldConfig<T, TOption>): DropdownField<T, TOption> {
-    return {
-        ...createField('dropdown', config),
-        options: config.options,
-        optionLabel: config.optionLabel,
-        optionValue: config.optionValue
-    };
-}
+export const createDropdownField = <T, TOption>(config: DropdownFieldConfig<T, TOption>): DropdownField<T, TOption> =>
+	({
+		...createField('dropdown', config),
+		options: config.options,
+		optionLabel: config.optionLabel,
+		optionValue: config.optionValue
+	});
 
 export interface ArrayFieldConfig<T> extends FieldConfig<T[]> {
-    fieldsFactory: (o: T) => Field<T> | Form<T>;
+	fieldsFactory: (o: T) => Field<T> | Form<T>;
 }
 
-export class ArrayField<T> extends Field<T[]> {
-    constructor(config: ArrayFieldConfig<T>) {
-        super(config);
-    }
+export interface ArrayField<T> extends Field<T[]> {
+	fieldsFactory: (o: T) => Field<T> | Form<T>;
+}
+
+export const createArrayField = <T>(config: ArrayFieldConfig<T>): ArrayField<T> =>
+	({
+		...createField('array', config),
+		fieldsFactory: config.fieldsFactory
+	});
+
+export interface FormFieldConfig<T> extends FieldConfig<T> {
+
+}
+
+export interface FormField<T> extends Field<T> {
+
 }
