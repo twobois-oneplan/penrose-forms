@@ -10,7 +10,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "module": "commonjs",
     "noEmitHelpers": false,
-    "target": "ES5",
+    "target": "es6",
     "outDir": "./",
     "lib": [
       "es2017",
