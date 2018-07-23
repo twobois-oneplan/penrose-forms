@@ -1,9 +1,7 @@
 import { Validator } from './validator';
-import { Penrose } from './penrose';
-import { Form } from '.';
 
-export interface FieldConfig<T> {
-	value: T;
+export interface FieldConfig<T extends PropertyType> {
+	value?: T;
 	label: string;
 	validators?: Validator<Field<T>>[];
 	helpText?: string;
@@ -12,13 +10,16 @@ export interface FieldConfig<T> {
 interface Value<T> {
 	get: () => T;
 	set: (value: T) => void;
+	changed: ((value: T) => void) | null;
 }
 
-export interface Field<T> extends Penrose {
-	type: 'field'; // TODO: necessary
-	fieldType: string; // TODO: is des leiwaund?
+// export type PropertyType<TArray = any> = string | boolean | number | object | TArray[];
+export type PropertyType = string | boolean | number | object;
 
-	value: Value<T>;
+export interface Field<T extends PropertyType> {
+	type: string; // TODO: necessary
+
+	value: Value<T | null>;
 
 	label: string;
 	helpText: string | null;
@@ -32,31 +33,29 @@ export interface Field<T> extends Penrose {
 }
 
 // TODO: fieldType als parameter oder in die config?
-export function createField<T>(fieldType: string, config: FieldConfig<T>): Field<T> {
-	let _value = config.value;
+export function createField<T extends PropertyType>(type: string, config: FieldConfig<T>): Field<T> {
+	// think of providing a withValue function, with encapsulates the value in a closure and does changed and validation handling
+	let _value = config.value || null;
 
 	const validate = () => field.errors = validateField(field);
+	const setValue = (value: T) => {
+		_value = value;
+		validate();
+		if (field.value.changed) field.value.changed(field.value.get());
+	}
 
 	const field: Field<T> = {
-		type: 'field',
-		fieldType: fieldType,
-
+		type: type,
 		value: {
 			get: () => _value,
-			set: (value: T) => {
-				_value = value;
-				validate();
-			}
+			set: setValue,
+			changed: null
 		},
-
 		label: config.label,
 		helpText: config.helpText || null,
-
 		validators: config.validators || [],
 		validate: validate,
-
 		errors: {},
-
 		isTouched: false
 	};
 
@@ -114,19 +113,19 @@ export const createNumberField = (config: FieldConfig<number>): NumberField => c
 export interface BoolField extends Field<boolean> { }
 export const createBoolField = (config: FieldConfig<boolean>): BoolField => createField('bool', config);
 
-export interface DropdownFieldConfig<T, TOption> extends FieldConfig<T> {
+export interface DropdownFieldConfig<T extends PropertyType, TOption> extends FieldConfig<T> {
 	options: TOption[];
 	optionLabel: (value: TOption) => string;
 	optionValue: (value: TOption) => T;
 }
 
-export interface DropdownField<T, TOption> extends Field<T> {
+export interface DropdownField<T extends PropertyType, TOption> extends Field<T> {
 	options: TOption[];
 	optionLabel: (value: TOption) => string;
 	optionValue: (value: TOption) => T;
 }
 
-export const createDropdownField = <T, TOption>(config: DropdownFieldConfig<T, TOption>): DropdownField<T, TOption> =>
+export const createDropdownField = <T extends PropertyType, TOption>(config: DropdownFieldConfig<T, TOption>): DropdownField<T, TOption> =>
 	({
 		...createField('dropdown', config),
 		options: config.options,
@@ -134,24 +133,16 @@ export const createDropdownField = <T, TOption>(config: DropdownFieldConfig<T, T
 		optionValue: config.optionValue
 	});
 
-export interface ArrayFieldConfig<T> extends FieldConfig<T[]> {
-	fieldsFactory: (o: T) => Field<T> | Form<T>;
+export interface ArrayFieldConfig<T extends PropertyType> extends FieldConfig<T[]> {
+	fieldsFactory: (o: T) => Field<T>;
 }
 
-export interface ArrayField<T> extends Field<T[]> {
-	fieldsFactory: (o: T) => Field<T> | Form<T>;
+export interface ArrayField<T extends PropertyType> extends Field<T[]> {
+	fieldsFactory: (o: T) => Field<T>;
 }
 
-export const createArrayField = <T>(config: ArrayFieldConfig<T>): ArrayField<T> =>
+export const createArrayField = <T extends PropertyType>(config: ArrayFieldConfig<T>): ArrayField<T> =>
 	({
-		...createField('array', config),
+		...createField('array', config), // i think createField cannot be used here, see Form for specialities
 		fieldsFactory: config.fieldsFactory
 	});
-
-export interface FormFieldConfig<T> extends FieldConfig<T> {
-
-}
-
-export interface FormField<T> extends Field<T> {
-
-}

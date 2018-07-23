@@ -1,62 +1,56 @@
-import { Penrose } from './penrose';
-import { Field } from './field';
-import { FormArray } from './form-array';
+import { Field, PropertyType } from './field';
 import { Omit } from 'type-zoo';
 
-export type FormFieldsConfig<T extends Object> = {
+export interface ValuesOnly {
+	[key: string]: PropertyType;
+}
+
+export type FormFieldsConfig<T extends ValuesOnly> = {
 	[K in keyof T]: Field<T[K]>;
 }
 
-export interface Form<T, K extends keyof T = never> extends Penrose {
-	type: 'form';
+export interface Form<T extends ValuesOnly, K extends keyof T = any> extends Field<Omit<T, K>> {
 	formType: string;
 	fields: FormFieldsConfig<Omit<T, K>>;
 }
 
-export interface FormConfig<T> {
+export interface FormConfig<T extends ValuesOnly> {
 	formType: string;
 	fields: FormFieldsConfig<T>;
 }
 
-export function createForm<T>(config: FormConfig<T>): Form<T> {
-	return {
+export function createForm<T extends ValuesOnly, K extends keyof T = any>(config: FormConfig<T>): Form<T> {
+	let isBatchChange = false;
+
+	const validate = () => form.errors = {} // TODO: global validation
+	const getValue = () => <any>Object.entries(config.fields).map(([key, field]) => ({ [key]: field.value.get() })); // TODO: typing problems, should return 
+	const setValue = (value: any) => { // TODO: typing problems: value should be Omit<T, K>
+		isBatchChange = true;
+		Object.entries(value).forEach(([key, value]) => config.fields[key].value.set(value));
+		isBatchChange = false;
+		form.validate();
+	};
+	const handlePropertyChange = () => { if (!isBatchChange && form.value.changed) form.value.changed(form.value.get()); }
+	Object.values(config.fields).forEach(field => field.value.changed = handlePropertyChange);
+
+	const form: Form<T> = {
 		type: 'form',
 		formType: config.formType,
-		fields: config.fields
+		fields: config.fields,
+		label: "",
+		value: {
+			get: getValue,
+			set: setValue,
+			changed: null
+		},
+		helpText: "",
+		validators: [],
+		validate: validate,
+		errors: {},
+		isTouched: false
 	};
-}
-export function setFormValues<T>(form: Form<T>, values: Partial<T>) {
-	// TODO: typing problems
-	Object
-		.entries(values)
-		.map(value => ({ key: value[0], value: value[1] }))
-		.filter(({ key, value }) => value != null && form.fields[key] != null)
-		.forEach(({ key, value }) => {
-			const type = form.fields[key].type;
 
-			if (type === 'form') {
-				setFormValues(form.fields[key], value);
-			}
-
-			if (type === 'field') {
-				const field: Field<any> = form.fields[key];
-				field.setValue(value);
-			}
-
-			if (type === 'formArray') {
-				const formArray: FormArray<any> = form.fields[key];
-				formArray.forms = (<any[]>value).map(m => formArray.formFactory());
-				formArray.forms.forEach((f, i) => setFormValues(f, value[i]));
-			}
-		});
+	return form;
 }
 
-export function getFormValues<T>(form: Form<T>): Partial<T> {
-	return Object
-		.entries(form.fields)
-		.map(value => ({ key: value[0], field: value[1] }))
-		.reduce((result, { key, field }) => {
-			result[key] = (<Field<any>>field).getValue();
-			return result;
-		}, {});
-}
+// set partial form values
