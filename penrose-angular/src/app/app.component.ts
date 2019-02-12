@@ -3,7 +3,7 @@ import { setFormValues, getFormValues } from '../../../penrose-core/form';
 import { FormComponent, FormArrayComponent } from './forms';
 import {
     PersonDto, createPersonForm, PersonForm, EmployeeDto,
-    ProductDto, OrderForm, AddressForm, createOrderForm, OrderDto, ProductOrderDto
+    ProductDto, OrderForm, AddressForm, createOrderForm, OrderDto, ProductOrderDto, ProductOrderFormArray, ProductOrderForm
 } from './form-definitions';
 import { FormArray } from '../../../penrose-core';
 
@@ -48,7 +48,7 @@ export class AppComponent {
             employee: this.employees[0],
             products: [
                 { product: 1, count: 2 },
-                { product: 3, count: 1 },
+                { product: 2, count: 1 },
             ]
         };
 
@@ -94,4 +94,30 @@ export class AppComponent {
 })
 export class AddressFormComponent implements FormComponent<AddressForm> {
     @Input() form: AddressForm;
+}
+
+@Component({
+  selector: 'pen-product-order-list',
+  template: `
+      <h4>Products</h4>
+      <div *ngFor="let form of formArray.forms">
+        <pen-form-group [field]="form"></pen-form-group>
+      </div>
+  `
+})
+export class ProductOrderListComponent implements FormArrayComponent<ProductOrderFormArray> {
+  @Input() formArray: ProductOrderFormArray;
+}
+
+@Component({
+  selector: 'pen-product-order-form',
+  template: `
+    <div class="form-row">
+      <pen-form-group class="col-md-8" [field]="form.fields.product"></pen-form-group>
+      <pen-form-group class="col-md-4" [field]="form.fields.count"></pen-form-group>
+    </div>
+  `
+})
+export class ProductOrderFormComponent implements FormComponent<ProductOrderForm> {
+  @Input() form: ProductOrderForm;
 }

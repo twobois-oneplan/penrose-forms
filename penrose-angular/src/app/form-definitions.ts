@@ -109,7 +109,7 @@ export const createProductOrderForm = (products: ProductDto[]): ProductOrderForm
                 options: products,
                 optionLabel: p => p.name,
                 optionValue: p => p.id,
-                label: 'Products'
+                label: 'Product'
             }),
             count: createNumberField({ value: 1, label: 'Anzahl' })
         }

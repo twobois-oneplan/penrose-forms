@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
-import { AppComponent, AddressFormComponent } from './app.component';
+import { AppComponent, AddressFormComponent, ProductOrderListComponent, ProductOrderFormComponent } from './app.component';
 import {
     TextField, TextareaField, NumberField, PasswordField, DropdownField, BoolField, Field
 } from '../../../penrose-core/field';
@@ -20,7 +20,9 @@ import { PenroseBootstrapFormsModule } from './bootstrap-forms/bootstrap-forms.m
 import { AddressFormType } from './form-definitions';
 
 const customInputs = [
-    AddressFormComponent
+    AddressFormComponent,
+    ProductOrderListComponent,
+    ProductOrderFormComponent
 ];
 
 @NgModule({
@@ -42,12 +44,13 @@ const customInputs = [
             bindField('dropdown', BootstrapDropdownComponent),
         ],
         formMappings: [
-            bindForm(AddressFormType, AddressFormComponent)
+            bindForm(AddressFormType, AddressFormComponent),
+            bindForm('productOrder', ProductOrderFormComponent)
         ],
         // TODO: create example for FormArrays
-        // formArrayMappings: [
-        //     bindFormArray('productOrderList', ProductOrderListComponent)
-        // ]
+        formArrayMappings: [
+            bindFormArray('productOrderList', ProductOrderListComponent)
+        ]
     })
   ],
   providers: [],
