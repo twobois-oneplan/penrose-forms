@@ -49,3 +49,6 @@
 <pen-form-group [field]="field"></pen-form-group>
 <pen-form-group [field]="fieldArray"></pen-form-group>
 ```
+
+## Penrose Wiki
+* [Validation](https://github.com/twobois-oneplan/frontend-experiments/wiki/Validation)
