@@ -31,7 +31,7 @@ export const createPersonForm = (): PersonForm => {
             firstName: createTextField({ validators: [Required], label: 'First Name' }),
             lastName: createTextField({ validators: [], label: 'Last Name' }),
             age: createNumberField({ validators: [Min(18), Max(25)], label: 'Age' }),
-            isNice: createBoolField({ validators: [MustBeTrue], label: 'Is a nice dude' }),
+            isNice: createBoolField({ id: 'isNice1', validators: [MustBeTrue], label: 'Is a nice dude' }),
             address: createAddressForm()
         }
     }) as PersonForm;

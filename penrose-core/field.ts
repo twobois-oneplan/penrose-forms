@@ -4,6 +4,7 @@ import makeSubject from 'callbag-subject';
 
 export interface FieldConfig<T> {
     value?: T;
+    id?: string;
     label: string;
     validators?: Validator<Field<T>>[];
     helpText?: string;
@@ -16,8 +17,9 @@ export interface Field<T> extends Penrose {
     getValue: () => T;
     setValue: (value: T) => void;
 
-    label: string;
-    helpText: string;
+    id: string | null;
+    label: string | null;
+    helpText: string | null;
 
     validators: Validator<Field<T>>[];
     validate: () => void;
@@ -40,6 +42,7 @@ export function createField<T>(fieldType: string, config: FieldConfig<T>): Field
         getValue: () => _value,
         setValue: null,
 
+        id: config.id || null,
         label: config.label || null,
         helpText: config.helpText || null,
 

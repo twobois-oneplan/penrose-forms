@@ -7,7 +7,7 @@ import { BoolField } from '../../../../../penrose-core';
     template: `
         <div class="form-group">
             <div class="custom-control custom-checkbox mr-sm-2">
-                <input type="checkbox" class="custom-control-input" id="seas"
+                <input type="checkbox" class="custom-control-input" id="{{ field.id }}"
                 [ngModel]="field.getValue()" (ngModelChange)="field.setValue($event)"
                 (blur)="field.setTouched()"
                 [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }">

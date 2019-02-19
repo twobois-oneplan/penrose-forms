@@ -47,7 +47,6 @@ const customInputs = [
             bindForm(AddressFormType, AddressFormComponent),
             bindForm('productOrder', ProductOrderFormComponent)
         ],
-        // TODO: create example for FormArrays
         formArrayMappings: [
             bindFormArray('productOrderList', ProductOrderListComponent)
         ]

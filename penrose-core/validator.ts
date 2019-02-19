@@ -73,8 +73,6 @@ export interface GlobalValidatorConfig<T, U> {
 
 export function addGlobalValidator<T, U>(config: GlobalValidatorConfig<T, U>): void {
     const onValueChange = (x) => {
-        console.log('ValueChange: revalidating register form. %o', config.influences.errors);
-
         config.validators.forEach(v => {
             const isInvalid = !v.isValid(config.on);
             if (isInvalid) {
