@@ -146,7 +146,7 @@ export interface RegisterDto {
 
 export interface RegisterForm extends Form<RegisterDto> {
     fields: {
-        emai: Field<string>,
+        email: Field<string>,
         password: Field<string>,
         confirmPassword: Field<string>
     }
