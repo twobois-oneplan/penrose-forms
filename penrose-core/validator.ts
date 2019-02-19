@@ -1,9 +1,10 @@
+import { Penrose } from "./penrose";
 import { Field } from "./field";
 import { Form } from "./form";
 
 import {forEach, fromEvent, map, filter, pipe} from 'callbag-basics';
 
-export interface Validator<T extends Field<any>> {
+export interface Validator<T extends Penrose> {
     key: string;
     isValid: (field: T) => boolean;
     errorMessage: string;
@@ -21,7 +22,7 @@ export const MustBeFalse: Validator<Field<boolean>> = { key: 'mustBeFalse', isVa
 export interface ConditionalValidatorConfig<T, U> {
     on: Form<T>,
     influences: Field<U>,
-    when: any[],
+    when: any[], // TODO typing with valueChanges Stream type
     check: {
         condition: (form: Form<T>) => boolean,
         validators: Validator<Field<U>>[];
@@ -60,5 +61,27 @@ export function addConditionalValidator<T, U>(config: ConditionalValidatorConfig
     }
 
     // Register callback
+    config.when.forEach((w) => pipe(w, forEach(onValueChange)));
+}
+
+export interface GlobalValidatorConfig<T, U> {
+    on: Form<T>,
+    influences: Field<U>,
+    when: any[], // TODO typing with valueChanges Stream type
+    validators: Validator<Form<T>>[]
+}
+
+export function addGlobalValidator<T, U>(config: GlobalValidatorConfig<T, U>): void {
+    const onValueChange = (x) => {
+        console.log('ValueChange: revalidating register form. %o', config.influences.errors);
+
+        config.validators.forEach(v => {
+            const isInvalid = !v.isValid(config.on);
+            if (isInvalid) {
+                config.influences.errors[v.key] = v.errorMessage;
+            }
+        });
+    }
+
     config.when.forEach((w) => pipe(w, forEach(onValueChange)));
 }

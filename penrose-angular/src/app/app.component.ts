@@ -57,7 +57,7 @@ export class AppComponent {
         setFormValues(this.orderForm, orderDto);
 
         this.registerForm = createRegisterForm();
-        setFormValues(this.registerForm, { email: 'pangeax@github.com' });
+        setFormValues(this.registerForm, { email: 'pangeax@github.com', password: '', confirmPassword: '' });
     }
 
     // TODO: implement example

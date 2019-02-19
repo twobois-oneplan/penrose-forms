@@ -1,8 +1,8 @@
-import { Required, Min, Max, MustBeTrue, addConditionalValidator } from '../../../penrose-core';
+import { Required, Min, Max, MustBeTrue, addConditionalValidator, addGlobalValidator } from '../../../penrose-core';
 import {
      createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField, Field, createPasswordField
 } from '../../../penrose-core/field';
-import { Form, createForm } from '../../../penrose-core/form';
+import { Form, createForm, getFormValues } from '../../../penrose-core/form';
 import { FormArray, createFormArray } from '../../../penrose-core/form-array';
 
 /* Person */
@@ -144,15 +144,38 @@ export interface RegisterDto {
     confirmPassword: string;
 }
 
-export interface RegisterForm extends Form<RegisterDto> {}
+export interface RegisterForm extends Form<RegisterDto> {
+    fields: {
+        emai: Field<string>,
+        password: Field<string>,
+        confirmPassword: Field<string>
+    }
+}
 export const createRegisterForm = () => {
-    const form = createForm<RegisterDto>({
+    const form: RegisterForm = createForm<RegisterDto>({
         formType: 'register',
         fields: {
             email: createTextField({ label: 'Email' }),
             password: createPasswordField({ label: 'Password '}),
             confirmPassword: createPasswordField({ label: 'Confirm Password' })
         }
+    }) as RegisterForm;
+
+    addGlobalValidator<RegisterDto, string>({
+        on: form,
+        influences: form.fields.confirmPassword,
+        when: [
+            form.fields.password.valueChange,
+            form.fields.confirmPassword.valueChange
+        ],
+        validators: [{
+            key: 'confirmEmail',
+            isValid: (form: RegisterForm) => {
+                const register = getFormValues<RegisterDto>(form);
+                return register.password === register.confirmPassword;
+            },
+            errorMessage: 'ShouldBeTheSame',
+        }],
     });
 
     return form;
