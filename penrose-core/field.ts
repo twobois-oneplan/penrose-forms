@@ -1,5 +1,6 @@
 import { Validator } from './validator';
 import { Penrose } from './penrose';
+import makeSubject from 'callbag-subject';
 
 export interface FieldConfig<T> {
     value?: T;
@@ -21,13 +22,15 @@ export interface Field<T> extends Penrose {
     validators: Validator<Field<T>>[];
     validate: () => void;
 
-    errors: Object;    
+    errors: Object;
 
+    valueChange: any; // TODO: add typing
     isTouched: boolean;
 }
 
 // TODO: fieldType als parameter oder in die config?
 export function createField<T>(fieldType: string, config: FieldConfig<T>): Field<T> {
+    const subject = makeSubject();
     let _value = config.value || null; // TODO: null ok?
 
     const field: Field<T> = {
@@ -45,6 +48,7 @@ export function createField<T>(fieldType: string, config: FieldConfig<T>): Field
 
         errors: {},
 
+        valueChange: subject,
         isTouched: false
     };
 
@@ -52,6 +56,7 @@ export function createField<T>(fieldType: string, config: FieldConfig<T>): Field
     field.setValue = (value: T) => {
         _value = value;
         field.validate();
+        subject(1, value);
     };
 
     return field;

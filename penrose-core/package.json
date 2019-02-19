@@ -1,0 +1,12 @@
+{
+  "name": "penrose-core",
+  "version": "0.0.0",
+  "dependencies": {
+    "callbag-basics": "^3.0.1",
+    "callbag-subject": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

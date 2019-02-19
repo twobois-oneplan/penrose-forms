@@ -1,6 +1,6 @@
-import { Required, Min, Max, MustBeTrue } from '../../../penrose-core';
+import { Required, Min, Max, MustBeTrue, addConditionalValidator } from '../../../penrose-core';
 import {
-     createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField
+     createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField, Field
 } from '../../../penrose-core/field';
 import { Form, createForm } from '../../../penrose-core/form';
 import { FormArray, createFormArray } from '../../../penrose-core/form-array';
@@ -14,18 +14,39 @@ export interface PersonDto {
     address: AddressDto;
 }
 
-export interface PersonForm extends Form<PersonDto> { }
+// To add better typing when accessing form fields
+export interface PersonForm extends Form<PersonDto> {
+    fields: {
+        firstName: Field<string>
+        lastName: Field<string>
+        age: Field<number>,
+        isNice: Field<boolean>,
+        address: AddressForm
+    }
+}
 export const createPersonForm = (): PersonForm => {
-    return createForm<PersonDto>({
+    const form = createForm<PersonDto>({
         formType: 'person',
         fields: {
             firstName: createTextField({ validators: [Required], label: 'First Name' }),
-            lastName: createTextField({ validators: [Required], label: 'Last Name' }),
+            lastName: createTextField({ validators: [], label: 'Last Name' }),
             age: createNumberField({ validators: [Min(18), Max(25)], label: 'Age' }),
             isNice: createBoolField({ validators: [MustBeTrue], label: 'Is a nice dude' }),
             address: createAddressForm()
         }
+    }) as PersonForm;
+
+    addConditionalValidator<PersonDto, string>({
+        on: form,
+        influences: form.fields.lastName,
+        when: [form.fields.firstName.valueChange],
+        check: [{
+            condition: (form: PersonForm) => form.fields.firstName.getValue() === "Daniel2",
+            validators: [Required]
+        }]
     });
+
+    return form;
 };
 
 /* Address */

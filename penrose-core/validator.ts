@@ -1,4 +1,7 @@
 import { Field } from "./field";
+import { Form } from "./form";
+
+import {forEach, fromEvent, map, filter, pipe} from 'callbag-basics';
 
 export interface Validator<T extends Field<any>> {
     key: string;
@@ -14,3 +17,48 @@ export const Min = (min: number): Validator<Field<number>> => ({ key: 'min', isV
 export const Max = (max: number): Validator<Field<number>> => ({ key: 'max', isValid: (field: Field<number>) => field.getValue() <= max, errorMessage: 'Max is ' + max });
 export const MustBeTrue: Validator<Field<boolean>> = { key: 'mustBeTrue', isValid: (field: Field<boolean>) => field.getValue() === true, errorMessage: 'Must be true' };
 export const MustBeFalse: Validator<Field<boolean>> = { key: 'mustBeFalse', isValid: (field: Field<boolean>) => field.getValue() === false, errorMessage: 'Must be false' };
+
+export interface ConditionalValidatorConfig<T, U> {
+    on: Form<T>,
+    influences: Field<U>,
+    when: any[],
+    check: {
+        condition: (form: Form<T>) => boolean,
+        validators: Validator<Field<U>>[];
+    }[]
+}
+
+export function addConditionalValidator<T, U>(config: ConditionalValidatorConfig<T, U>): void {
+    const onValueChange = (x) => {
+        let changedValidators = false;
+
+        config.check.forEach(c => {
+            if (c.condition(config.on)) {
+                // Add validators
+                c.validators.forEach(v => {
+                    const hasValidator = config.influences.validators.some(va => va.key == v.key);
+                    if (!hasValidator) {
+                        config.influences.validators.push(v);
+                        changedValidators = true;
+                    }
+                });
+            } else {
+                // Remove validators
+                c.validators.forEach(v => {
+                    const validator = config.influences.validators.find(va => va.key == v.key);
+                    if (validator) {
+                        config.influences.validators.splice(config.influences.validators.indexOf(validator), 1)
+                        changedValidators = true;
+                    }
+                });
+            }
+        });
+
+        if (changedValidators) {
+            config.influences.validate();
+        }
+    }
+
+    // Register callback
+    config.when.forEach((w) => pipe(w, forEach(onValueChange)));
+}

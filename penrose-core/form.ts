@@ -21,7 +21,7 @@ export function createForm<T>(config: FormConfig<T>): Form<T> {
     return {
         type: 'form',
         formType: config.formType,
-        fields: config.fields 
+        fields: config.fields
     };
 }
 
@@ -39,7 +39,7 @@ export function setFormValues<T>(form: Form<T>, values: Partial<T>) {
             if (type === 'form') {
                 setFormValues(form.fields[key], value);
             }
-            
+
             if (type === 'field') {
                 const field: Field<any> = form.fields[key];
                 field.setValue(value);
