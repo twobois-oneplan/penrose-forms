@@ -3,7 +3,7 @@ import { setFormValues, getFormValues } from '../../../penrose-core/form';
 import { FormComponent, FormArrayComponent } from './forms';
 import {
     PersonDto, createPersonForm, PersonForm, EmployeeDto,
-    ProductDto, OrderForm, AddressForm, createOrderForm, OrderDto, ProductOrderDto, ProductOrderFormArray, ProductOrderForm
+    ProductDto, OrderForm, AddressForm, createOrderForm, OrderDto, ProductOrderDto, ProductOrderFormArray, ProductOrderForm, RegisterForm, createRegisterForm
 } from './form-definitions';
 import { FormArray } from '../../../penrose-core';
 
@@ -26,6 +26,7 @@ export class AppComponent {
     // TODO: add disabled state
     public personForm: PersonForm;
     public orderForm: OrderForm;
+    public registerForm: RegisterForm;
 
     constructor() {
         const personDto: PersonDto = {
@@ -54,6 +55,9 @@ export class AppComponent {
 
         this.orderForm = createOrderForm(this.employees, this.products);
         setFormValues(this.orderForm, orderDto);
+
+        this.registerForm = createRegisterForm();
+        setFormValues(this.registerForm, { email: 'pangeax@github.com' });
     }
 
     // TODO: implement example

@@ -1,6 +1,6 @@
 import { Required, Min, Max, MustBeTrue, addConditionalValidator } from '../../../penrose-core';
 import {
-     createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField, Field
+     createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField, Field, createPasswordField
 } from '../../../penrose-core/field';
 import { Form, createForm } from '../../../penrose-core/form';
 import { FormArray, createFormArray } from '../../../penrose-core/form-array';
@@ -135,4 +135,25 @@ export const createProductOrderForm = (products: ProductDto[]): ProductOrderForm
             count: createNumberField({ value: 1, label: 'Anzahl' })
         }
     });
+};
+
+/* Regiser Form */
+export interface RegisterDto {
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export interface RegisterForm extends Form<RegisterDto> {}
+export const createRegisterForm = () => {
+    const form = createForm<RegisterDto>({
+        formType: 'register',
+        fields: {
+            email: createTextField({ label: 'Email' }),
+            password: createPasswordField({ label: 'Password '}),
+            confirmPassword: createPasswordField({ label: 'Confirm Password' })
+        }
+    });
+
+    return form;
 };

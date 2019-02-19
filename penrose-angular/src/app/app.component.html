@@ -17,7 +17,7 @@
         <div class="form-row">
             <pen-form-group class="col-md-4" [field]="person.age"></pen-form-group>
         </div>
-        
+
         <pen-form-group [field]="person.isNice"></pen-form-group>
 
         <div *ngIf="person.address.fields; let address">
@@ -34,5 +34,12 @@
     <form novalidate>
         <pen-form-group [field]="orderForm"></pen-form-group>
         <button class="btn btn-primary" (click)="savePerson()">save</button>
+    </form>
+</div>
+
+<div class="container mt-5">
+    <h2>Register Form</h2>
+    <form novalidate>
+        <pen-form-group [field]="registerForm"></pen-form-group>
     </form>
 </div>
