@@ -18,7 +18,7 @@ import { PenroseBootstrapFormsModule } from './bootstrap-forms/bootstrap-forms.m
 import { AddressFormType } from './form-definitions';
 import {
     PersonFormComponent, AddressFormComponent, OrderFormComponent,
-    ProductOrderListComponent, ProductOrderFormComponent, RegisterFormComponent
+    ProductOrderListComponent, RegisterFormComponent
 } from './examples';
 
 const customInputs = [
@@ -26,7 +26,6 @@ const customInputs = [
     AddressFormComponent,
     OrderFormComponent,
     ProductOrderListComponent,
-    ProductOrderFormComponent,
     RegisterFormComponent
 ];
 
@@ -57,8 +56,7 @@ const appRoutes: Routes = [
             bindField('dropdown', BootstrapDropdownComponent),
         ],
         formMappings: [
-            bindForm(AddressFormType, AddressFormComponent),
-            bindForm('productOrder', ProductOrderFormComponent)
+            bindForm(AddressFormType, AddressFormComponent)
         ],
         formArrayMappings: [
             bindFormArray('productOrderList', ProductOrderListComponent)

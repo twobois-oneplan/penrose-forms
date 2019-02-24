@@ -1,9 +1,9 @@
 import { Component, Input } from "@angular/core";
 import {
     OrderForm, createOrderForm, EmployeeDto, OrderDto, ProductDto,
-    ProductOrderFormArray, ProductOrderForm
+    ProductOrderFormArray, ProductOrderForm, ProductOrderDto
 } from "../form-definitions";
-import { setFormValues } from "../../../../penrose-core";
+import { setFormValues, getFormValues, addForm, getFormArrayValues, setFormArrayValues } from "../../../../penrose-core";
 import { FormComponent, FormArrayComponent } from "../forms/components";
 
 @Component({
@@ -13,7 +13,7 @@ import { FormComponent, FormArrayComponent } from "../forms/components";
             <h2>Order Form</h2>
             <form novalidate>
                 <pen-form-group [field]="orderForm"></pen-form-group>
-                <button class="btn btn-primary" (click)="savePerson()">save</button>
+                <button class="btn btn-primary" (click)="save()">save</button>
             </form>
         </div>
     `
@@ -47,51 +47,45 @@ export class OrderFormComponent {
         setFormValues(this.orderForm, orderDto);
     }
 
-    // TODO: implement example
-
-    // public addOrderProduct(): void {
-    //     const product = this.products[0];
-    //     // this.orderForm.fields.products.push(this.getProductOrderModel(product));
-    // }
-
-    // public getProductOrderModel(product: ProductDto): ProductOrderForm {
-    //     return new ProductOrderForm({
-    //         product: createDropdownField<number, ProductDto>({
-    //             value: product.id,
-    //             options: this.products,
-    //             optionLabel: p => p.name,
-    //             optionValue: p => p.id,
-    //             label: 'Products'
-    //         }),
-    //         count: createNumberField({ value: 1, label: 'Anzahl' })
-    //     });
-    // }
+    public save(): void {
+        console.log(getFormValues(this.orderForm));
+    }
 }
 
 @Component({
     selector: 'pen-product-order-list',
     template: `
-          <h4>Products</h4>
-          <div *ngFor="let form of formArray.forms">
-              <pen-form-group [field]="form"></pen-form-group>
+          <div class="row">
+            <h4 class="col">Products</h4>
+            <div class="col text-right">
+                <button class="btn btn-primary" (click)="add()">Add Product</button>
+            </div>
+          </div>
+          <div *ngFor="let form of formArray.forms; let i = index">
+                <div class="form-row">
+                    <pen-form-group class="col-md-7" [field]="form.fields.product"></pen-form-group>
+                    <pen-form-group class="col-md-3" [field]="form.fields.count"></pen-form-group>
+                    <div class="col-md-2">
+                        <button class="btn btn-danger btn-block" (click)="remove(i)" style="margin-top: 32px">Remove</button>
+                    </div>
+                </div>
           </div>
     `
 })
 export class ProductOrderListComponent implements FormArrayComponent<ProductOrderFormArray> {
     @Input() formArray: ProductOrderFormArray;
-}
 
-@Component({
-    selector: 'pen-product-order-form',
-    template: `
-      <div *ngIf="!form.isHidden">
-          <div class="form-row">
-          <pen-form-group class="col-md-8" [field]="form.fields.product"></pen-form-group>
-          <pen-form-group class="col-md-4" [field]="form.fields.count"></pen-form-group>
-          </div>
-      </div>
-    `
-})
-export class ProductOrderFormComponent implements FormComponent<ProductOrderForm> {
-    @Input() form: ProductOrderForm;
+    public add(): void {
+        addForm<ProductOrderDto>(this.formArray, { product: 1, count: 3});
+
+        // OR:
+
+        // const products = getFormArrayValues<ProductOrderDto>(this.formArray);
+        // products.push({ product: 1, count: 3 });
+        // setFormArrayValues(this.formArray, products);
+    }
+
+    public remove(index: number): void {
+        this.formArray.forms.splice(index, 1);
+    }
 }
