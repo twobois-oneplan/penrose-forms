@@ -1,5 +1,5 @@
 import { Penrose } from './penrose';
-import { Form } from './form';
+import { Form, setFormValues, getFormValues } from './form';
 
 export interface FormArray<T> extends Penrose {
     type: 'formArray';
@@ -20,4 +20,19 @@ export function createFormArray<T>(formArrayType: string, config: FormArrayConfi
         formFactory: config.formFactory,
         forms: []
     };
+}
+
+export function addForm<T>(formArray: FormArray<T>, value: Partial<T>) {
+    const form = formArray.formFactory();
+    setFormValues(form, value);
+    formArray.forms.push(form);
+}
+
+export function getFormArrayValues<T>(formArray: FormArray<T>): Partial<T>[] {
+    return formArray.forms.map(form => getFormValues(form));
+}
+
+export function setFormArrayValues<T>(formArray: FormArray<T>, values: Partial<T>[]) {
+    formArray.forms = values.map(_ => formArray.formFactory());
+    formArray.forms.forEach((form, i) => setFormValues(form, values[i]));
 }

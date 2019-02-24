@@ -50,7 +50,7 @@ export function setFormValues<T>(form: Form<T>, values: Partial<T>) {
 
             if (type === 'formArray') {
                 const formArray = form.fields[key] as FormArray<any>;
-                formArray.forms = (<any[]>value).map(m => formArray.formFactory());
+                formArray.forms = (value as any[]).map(_ => formArray.formFactory());
                 formArray.forms.forEach((form, i) => setFormValues(form, value[i]));
             }
         });
