@@ -9,9 +9,9 @@ import { BoolField } from '../../../../../penrose-core';
             <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" id="{{ field.id }}"
                 [ngModel]="field.getValue()" (ngModelChange)="field.setValue($event)"
-                (blur)="field.setTouched()"
+                (blur)="field.isTouched = true"
                 [ngClass]="{ 'is-invalid': field.hasErrors && field.isTouched }">
-                <label class="custom-control-label" for="seas">{{ field.label }}</label>
+            <label class="custom-control-label" for="{{ field.id }}">{{ field.label }}</label>
             </div>
 
             <pen-bootstrap-help-text [field]="field"></pen-bootstrap-help-text>
