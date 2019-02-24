@@ -44,14 +44,14 @@ export function setFormValues<T>(form: Form<T>, values: Partial<T>) {
             }
 
             if (type === 'field') {
-                const field: Field<any> = form.fields[key];
+                const field = form.fields[key] as Field<any>;
                 field.setValue(value);
             }
 
             if (type === 'formArray') {
-                const formArray: FormArray<any> = form.fields[key];
+                const formArray = form.fields[key] as FormArray<any>;
                 formArray.forms = (<any[]>value).map(m => formArray.formFactory());
-                formArray.forms.forEach((f, i) => setFormValues(f, value[i]));
+                formArray.forms.forEach((form, i) => setFormValues(form, value[i]));
             }
         });
 }
@@ -59,9 +59,23 @@ export function setFormValues<T>(form: Form<T>, values: Partial<T>) {
 export function getFormValues<T>(form: Form<T>): Partial<T> {
     return Object
         .entries(form.fields)
-        .map(value => ({ key: value[0], field: value[1] }))
-        .reduce((result, {key, field}) => {
-            result[key] = (<Field<any>>field).getValue();
+        .map(value => ({ key: value[0], value: value[1] as Penrose }))
+        .reduce((result, { key, value }) => {
+            if (value.type === 'form') {
+                const form = value as Form<any>;
+                result[key] = getFormValues(form);
+            }
+
+            if (value.type === 'field') {
+                const field = value as Field<any>;
+                result[key] = field.getValue();
+            }
+
+            if (value.type === 'formArray') {
+                const formArray = value as FormArray<any>;
+                result[key] = formArray.forms.map(form => getFormValues(form));
+            }
+
             return result;
         }, {});
 }
