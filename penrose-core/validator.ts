@@ -2,7 +2,7 @@ import { Penrose } from "./penrose";
 import { Field } from "./field";
 import { Form } from "./form";
 
-import {forEach, fromEvent, map, filter, pipe} from 'callbag-basics';
+import {forEach, pipe} from 'callbag-basics';
 
 export interface Validator<T extends Penrose> {
     key: string;
@@ -30,7 +30,7 @@ export interface ConditionalValidatorConfig<T, U> {
 }
 
 export function addConditionalValidator<T, U>(config: ConditionalValidatorConfig<T, U>): void {
-    const onValueChange = (x) => {
+    const onValueChange = () => {
         let changedValidators = false;
 
         config.check.forEach(c => {
@@ -72,7 +72,7 @@ export interface GlobalValidatorConfig<T, U> {
 }
 
 export function addGlobalValidator<T, U>(config: GlobalValidatorConfig<T, U>): void {
-    const onValueChange = (x) => {
+    const onValueChange = () => {
         config.validators.forEach(v => {
             const isInvalid = !v.isValid(config.on);
             if (isInvalid) {

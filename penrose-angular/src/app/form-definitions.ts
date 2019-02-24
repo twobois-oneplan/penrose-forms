@@ -1,4 +1,4 @@
-import { Required, Min, Max, MustBeTrue, addConditionalValidator, addGlobalValidator } from '../../../penrose-core';
+import { Required, Min, Max, MustBeTrue, addConditionalValidator, addGlobalValidator, addConditionalDisable, addConditionalHide } from '../../../penrose-core';
 import {
      createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField, Field, createPasswordField
 } from '../../../penrose-core/field';
@@ -11,6 +11,7 @@ export interface PersonDto {
     lastName: string;
     age: number;
     isNice: boolean;
+    showAddress: boolean;
     address: AddressDto;
 }
 
@@ -21,6 +22,7 @@ export interface PersonForm extends Form<PersonDto> {
         lastName: Field<string>
         age: Field<number>,
         isNice: Field<boolean>,
+        showAddress: Field<boolean>,
         address: AddressForm
     }
 }
@@ -32,9 +34,17 @@ export const createPersonForm = (): PersonForm => {
             lastName: createTextField({ validators: [], label: 'Last Name' }),
             age: createNumberField({ validators: [Min(18), Max(25)], label: 'Age' }),
             isNice: createBoolField({ id: 'isNice1', validators: [MustBeTrue], label: 'Is a nice dude' }),
+            showAddress: createBoolField({ id: 'showAddress', label: 'Show Address' }),
             address: createAddressForm()
         }
     }) as PersonForm;
+
+    addConditionalHide<PersonDto, AddressDto>({
+        on: form,
+        influences: form.fields.address,
+        when: [form.fields.showAddress.valueChange],
+        isHidden: [(form: PersonForm) => form.fields.showAddress.getValue() === false]
+    });
 
     addConditionalValidator<PersonDto, string>({
         on: form,
@@ -160,6 +170,25 @@ export const createRegisterForm = () => {
             confirmPassword: createPasswordField({ label: 'Confirm Password' })
         }
     }) as RegisterForm;
+
+    addConditionalDisable<RegisterDto, string>({
+        on: form,
+        influences: form.fields.email,
+        when: [form.fields.password.valueChange],
+        isDisabled: [
+            (form: RegisterForm) => form.fields.password.getValue() == "daniel",
+            // (form: RegisterForm) => form.fields.password.getValue() == "daniel2",
+        ]
+    });
+
+    addConditionalHide<RegisterDto, string>({
+        on: form,
+        influences: form.fields.email,
+        when: [form.fields.password.valueChange],
+        isHidden: [
+            (form: RegisterForm) => form.fields.password.getValue() == "daniel"
+        ]
+    });
 
     addGlobalValidator<RegisterDto, string>({
         on: form,

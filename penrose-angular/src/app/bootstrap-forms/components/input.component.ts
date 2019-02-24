@@ -4,12 +4,13 @@ import { Field, hasErrors } from '../../../../../penrose-core';
 @Component({
     selector: 'pen-bootstrap-input',
     template: `
-        <div class="form-group">
+        <div class="form-group" *ngIf="!field.isHidden">
             <label>{{ field.label }}</label>
             <input class="form-control" type="{{ type }}"
                 [ngModel]="field.getValue()" (ngModelChange)="field.setValue($event)"
                 (blur)="field.isTouched = true"
-                [ngClass]="{ 'is-invalid': hasErrors && field.isTouched }"/>
+                [ngClass]="{ 'is-invalid': hasErrors && field.isTouched }"
+                [disabled]="field.isDisabled"/>
 
             <pen-bootstrap-help-text [field]="field"></pen-bootstrap-help-text>
             <pen-bootstrap-invalid-feedback [field]="field"></pen-bootstrap-invalid-feedback>

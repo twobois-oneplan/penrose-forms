@@ -6,11 +6,12 @@ import { DropdownField } from '../../../../../penrose-core';
 @Component({
     selector: 'pen-bootstrap-dropdown-input',
     template: `
-        <div class="form-group">
+        <div class="form-group" *ngIf="!field.isHidden">
             <label>{{ field.label }}</label>
             <select class="custom-select"
                 [ngModel]="field.getValue()" (ngModelChange)="field.setValue($event)"
-                (blur)="field.isTouched = true">
+                (blur)="field.isTouched = true"
+                [disabled]="field.isDisabled">
                 <option *ngFor="let option of field.options" [ngValue]="field.optionValue(option)">
                     {{field.optionLabel(option)}}
                 </option>

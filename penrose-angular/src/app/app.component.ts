@@ -34,6 +34,7 @@ export class AppComponent {
             lastName: 'Bauer',
             age: 23,
             isNice: true,
+            showAddress: false,
             address: {
                 street: 'Street',
                 streetNumber: 23
@@ -89,10 +90,12 @@ export class AppComponent {
 @Component({
     selector: 'pen-address-form',
     template: `
-        <h4>Address</h4>
-        <div class="form-row">
-            <pen-form-group class="col-md-8" [field]="form.fields.street"></pen-form-group>
-            <pen-form-group class="col-md-4" [field]="form.fields.streetNumber"></pen-form-group>
+        <div *ngIf="!form.isHidden">
+            <h4>Address</h4>
+            <div class="form-row">
+                <pen-form-group class="col-md-8" [field]="form.fields.street"></pen-form-group>
+                <pen-form-group class="col-md-4" [field]="form.fields.streetNumber"></pen-form-group>
+            </div>
         </div>
     `
 })
@@ -103,10 +106,10 @@ export class AddressFormComponent implements FormComponent<AddressForm> {
 @Component({
   selector: 'pen-product-order-list',
   template: `
-      <h4>Products</h4>
-      <div *ngFor="let form of formArray.forms">
-        <pen-form-group [field]="form"></pen-form-group>
-      </div>
+        <h4>Products</h4>
+        <div *ngFor="let form of formArray.forms">
+            <pen-form-group [field]="form"></pen-form-group>
+        </div>
   `
 })
 export class ProductOrderListComponent implements FormArrayComponent<ProductOrderFormArray> {
@@ -116,9 +119,11 @@ export class ProductOrderListComponent implements FormArrayComponent<ProductOrde
 @Component({
   selector: 'pen-product-order-form',
   template: `
-    <div class="form-row">
-      <pen-form-group class="col-md-8" [field]="form.fields.product"></pen-form-group>
-      <pen-form-group class="col-md-4" [field]="form.fields.count"></pen-form-group>
+    <div *ngIf="!form.isHidden">
+        <div class="form-row">
+        <pen-form-group class="col-md-8" [field]="form.fields.product"></pen-form-group>
+        <pen-form-group class="col-md-4" [field]="form.fields.count"></pen-form-group>
+        </div>
     </div>
   `
 })

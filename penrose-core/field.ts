@@ -8,6 +8,8 @@ export interface FieldConfig<T> {
     label: string;
     validators?: Validator<Field<T>>[];
     helpText?: string;
+    isDisabled?: boolean;
+    isHidden?: boolean;
 }
 
 export interface Field<T> extends Penrose {
@@ -28,6 +30,8 @@ export interface Field<T> extends Penrose {
 
     valueChange: any; // TODO: add typing
     isTouched: boolean;
+    isDisabled: boolean;
+    isHidden: boolean;
 }
 
 // TODO: fieldType als parameter oder in die config?
@@ -52,7 +56,9 @@ export function createField<T>(fieldType: string, config: FieldConfig<T>): Field
         errors: {},
 
         valueChange: subject,
-        isTouched: false
+        isTouched: false,
+        isDisabled: config.isDisabled || false,
+        isHidden: config.isHidden || false
     };
 
     field.validate = () => field.errors = validateField(field);

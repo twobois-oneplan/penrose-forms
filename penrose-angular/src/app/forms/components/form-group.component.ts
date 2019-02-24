@@ -8,9 +8,9 @@ import { FormArray } from '../../../../../penrose-core/form-array';
 @Component({
     selector: 'pen-form-group',
     template: `
-        <template #fieldControl></template>
+        <ng-template #fieldControl></ng-template>
 
-        <div *ngIf="subFields !== null">
+        <div *ngIf="subFields !== null && !field.isHidden">
             <pen-form-group *ngFor="let subField of subFields" [field]="subField"></pen-form-group>
         </div>
     `

@@ -10,18 +10,21 @@ export interface Form<T> extends Penrose {
     type: 'form';
     formType: string;
     fields: FormFieldsConfig<T>;
+    isHidden: boolean;
 }
 
 export interface FormConfig<T> {
     formType: string;
     fields: FormFieldsConfig<T>;
+    isHidden?: boolean;
 }
 
 export function createForm<T>(config: FormConfig<T>): Form<T> {
     return {
         type: 'form',
         formType: config.formType,
-        fields: config.fields
+        fields: config.fields,
+        isHidden: config.isHidden || false
     };
 }
 

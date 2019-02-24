@@ -6,13 +6,14 @@ import { TextareaField, hasErrors } from '../../../../../penrose-core';
 @Component({
     selector: 'pen-bootstrap-textarea',
     template: `
-        <div class="form-group">
+        <div class="form-group" *ngIf="!field.isHidden">
             <label>{{ field.label }}</label>
             <textarea class="form-control"
                 [ngModel]="field.getValue()" (ngModelChange)="field.setValue($event)"
                 (blur)="field.isTouched = true"
-                [attr.cols]="field.cols" [attr.rows]="field.rows"
-                [ngClass]="{ 'is-invalid': hasErrors && field.isTouched }">
+                [attr.cols]="field.columns" [attr.rows]="field.rows"
+                [ngClass]="{ 'is-invalid': hasErrors && field.isTouched }"
+                [disabled]="field.isDisabled">
             </textarea>
 
             <pen-bootstrap-help-text [field]="field"></pen-bootstrap-help-text>
