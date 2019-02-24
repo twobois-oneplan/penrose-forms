@@ -2,7 +2,6 @@ import { Input, Component } from '@angular/core';
 import { FieldComponent } from 'src/app/forms/components';
 import { TextareaField, hasErrors } from '../../../../../penrose-core';
 
-// TODO: Validation not showing..
 @Component({
     selector: 'pen-bootstrap-textarea',
     template: `

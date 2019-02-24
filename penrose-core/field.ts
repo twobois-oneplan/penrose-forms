@@ -1,6 +1,8 @@
 import { Validator } from './validator';
 import { Penrose } from './penrose';
+import { forEach, pipe } from 'callbag-basics';
 import makeSubject from 'callbag-subject';
+
 
 export interface FieldConfig<T> {
     value?: T;
@@ -34,16 +36,29 @@ export interface Field<T> extends Penrose {
     isHidden: boolean;
 }
 
+// TODO: Naming?
+export function handleValidation<T>(field: Field<T>, value: T | null) {
+    const subject = makeSubject();
+    field.valueChange = subject;
+
+    let _value = value || null; // TODO: null ok?
+
+    field.validate = () => field.errors = validateField(field);
+    field.getValue = () => _value;
+    field.setValue = (value: T) => {
+        _value = value;
+        field.validate();
+        subject(1, value);
+    };
+}
+
 // TODO: fieldType als parameter oder in die config?
 export function createField<T>(fieldType: string, config: FieldConfig<T>): Field<T> {
-    const subject = makeSubject();
-    let _value = config.value || null; // TODO: null ok?
-
     const field: Field<T> = {
         type: 'field',
         fieldType: fieldType,
 
-        getValue: () => _value,
+        getValue: null,
         setValue: null,
 
         id: config.id || null,
@@ -55,18 +70,13 @@ export function createField<T>(fieldType: string, config: FieldConfig<T>): Field
 
         errors: {},
 
-        valueChange: subject,
+        valueChange: null,
         isTouched: false,
         isDisabled: config.isDisabled || false,
-        isHidden: config.isHidden || false
+        isHidden: config.isHidden || false,
     };
 
-    field.validate = () => field.errors = validateField(field);
-    field.setValue = (value: T) => {
-        _value = value;
-        field.validate();
-        subject(1, value);
-    };
+    handleValidation(field, config.value);
 
     return field;
 }
@@ -109,11 +119,15 @@ export interface TextareaField extends Field<string> {
 }
 
 export function createTextareaField(config: TextareaFieldConfig): TextareaField {
-    return {
+    const field: TextareaField = {
         ...createField('textarea', config),
         columns: config.columns,
         rows: config.rows
     };
+
+    handleValidation(field, config.value);
+
+    return field;
 }
 
 export interface NumberField extends Field<number> { }
@@ -135,10 +149,14 @@ export interface DropdownField<T, TOption> extends Field<T> {
 }
 
 export function createDropdownField<T, TOption>(config: DropdownFieldConfig<T, TOption>): DropdownField<T, TOption> {
-    return {
+    const field: DropdownField<T, TOption> = {
         ...createField('dropdown', config),
         options: config.options,
         optionLabel: config.optionLabel,
         optionValue: config.optionValue
     };
+
+    handleValidation(field, config.value);
+
+    return field;
 }

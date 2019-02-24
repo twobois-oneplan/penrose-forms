@@ -2,7 +2,7 @@ import { Penrose } from "./penrose";
 import { Field } from "./field";
 import { Form } from "./form";
 
-import {forEach, pipe} from 'callbag-basics';
+import { forEach, pipe } from 'callbag-basics';
 
 export interface Validator<T extends Penrose> {
     key: string;

@@ -21,5 +21,5 @@ import { BoolField } from '../../../../../penrose-core';
     `
 })
 export class BootstrapCheckboxComponent implements FieldComponent<BoolField> {
-    @Input() field: BoolField; // TODO: id
+    @Input() field: BoolField;
 }
