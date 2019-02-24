@@ -1,6 +1,6 @@
 import { Required, Min, Max, MustBeTrue, addConditionalValidator, addGlobalValidator, addConditionalDisable, addConditionalHide } from '../../../penrose-core';
 import {
-     createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField, Field, createPasswordField
+     createTextField, createTextareaField, createDropdownField, createNumberField, createBoolField, Field, createPasswordField, DropdownField
 } from '../../../penrose-core/field';
 import { Form, createForm, getFormValues } from '../../../penrose-core/form';
 import { FormArray, createFormArray } from '../../../penrose-core/form-array';
@@ -114,7 +114,13 @@ export const createEmployeeDropdownField = (employees: EmployeeDto[]) => {
         optionLabel: (m: EmployeeDto) => `${m.firstName} ${m.lastName}`,
         optionValue: e => e,
         label: 'Employee',
-        validators: [] // TODO: test validators
+        validators: [
+            {
+                key: 'NotValidEmployeeSelection',
+                isValid: (field: DropdownField<EmployeeDto, EmployeeDto>) => field.getValue().firstName !== "Not Valid",
+                errorMessage: 'NotValidEmployeeSelection'
+            }
+        ]
     });
 };
 

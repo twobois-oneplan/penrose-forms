@@ -15,7 +15,8 @@ import { FormArray } from '../../../penrose-core';
 export class AppComponent {
     public employees: EmployeeDto[] = [
         { firstName: 'Daniel', lastName: 'Bauer' },
-        { firstName: 'Bernhard', lastName: 'Mayr' }
+        { firstName: 'Bernhard', lastName: 'Mayr' },
+        { firstName: 'Not Valid', lastName: 'Employee' }
     ];
 
     public products: ProductDto[] = [
