@@ -182,8 +182,7 @@ export const createRegisterForm = () => {
         influences: form.fields.email,
         when: [form.fields.password.valueChange],
         isDisabled: [
-            (form: RegisterForm) => form.fields.password.getValue() == "daniel",
-            // (form: RegisterForm) => form.fields.password.getValue() == "daniel2",
+            (form: RegisterForm) => form.fields.password.getValue() == "disable"
         ]
     });
 
@@ -192,7 +191,7 @@ export const createRegisterForm = () => {
         influences: form.fields.email,
         when: [form.fields.password.valueChange],
         isHidden: [
-            (form: RegisterForm) => form.fields.password.getValue() == "daniel"
+            (form: RegisterForm) => form.fields.password.getValue() == "hide"
         ]
     });
 

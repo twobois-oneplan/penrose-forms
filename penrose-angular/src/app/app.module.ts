@@ -45,10 +45,7 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(
-        appRoutes,
-        { enableTracing: true } // <-- debugging purposes only
-    ),
+    RouterModule.forRoot(appRoutes),
     PenroseBootstrapFormsModule, // Import Penrose Bootstrap Forms
     PenroseFormsModule.forRoot({ // Import Penrose Forms
         fieldMappings: [
