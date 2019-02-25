@@ -171,7 +171,7 @@ export const createRegisterForm = () => {
     const form: RegisterForm = createForm<RegisterDto>({
         formType: 'register',
         fields: {
-            email: createTextField({ label: 'Email' }),
+            email: createTextField({ label: 'Email', validators: [Required] }),
             password: createPasswordField({ label: 'Password '}),
             confirmPassword: createPasswordField({ label: 'Confirm Password' })
         }
