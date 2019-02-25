@@ -98,4 +98,4 @@ So you want to build a register form for your great website:
 
 ## More information
 * [More examples]() **TODO**
-* [How to do Validation](https://github.com/twobois-oneplan/frontend-experiments/wiki/Validation)
+* [How to do Validation](/wiki/Validation)
