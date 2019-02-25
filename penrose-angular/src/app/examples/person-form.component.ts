@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { PersonForm, PersonDto, createPersonForm, AddressForm } from "../form-definitions";
-import { setFormValues, getFormValues } from "../../../../penrose-core";
+import { setFormValues, getFormValues, validateForm, hasErrors, hasFormErrors, setFormTouched } from "../../../../penrose-core";
 import { FormComponent } from "../forms/components";
 
 @Component({
@@ -43,7 +43,7 @@ export class PersonFormComponent {
 
     constructor() {
         const personDto: PersonDto = {
-            firstName: 'Daniel',
+            firstName: '',
             lastName: 'Bauer',
             age: 23,
             isNice: true,
@@ -59,8 +59,13 @@ export class PersonFormComponent {
     }
 
     public savePerson() {
-        const dto = getFormValues(this.personForm);
-        console.log(dto);
+        setFormTouched(this.personForm);
+        validateForm(this.personForm);
+
+        if (!hasFormErrors(this.personForm)) {
+            const dto = getFormValues(this.personForm);
+            console.log(dto);
+        }
     }
 }
 
