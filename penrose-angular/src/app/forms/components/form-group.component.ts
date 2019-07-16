@@ -20,7 +20,7 @@ export class FormGroupComponent<T> implements OnInit {
 
     public subFields = null;
 
-    @ViewChild('fieldControl', {read: ViewContainerRef})
+    @ViewChild('fieldControl', {read: ViewContainerRef, static: true})
     targetRef: ViewContainerRef;
 
     constructor(
