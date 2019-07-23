@@ -2,8 +2,10 @@ import { Penrose } from './penrose';
 import { Field, hasErrors } from './field';
 import { FormArray } from './form-array';
 
+export type ValuesOf<T extends any[]>= T[number];
+
 export type FormFieldsConfig<T extends { [key: string]: any }> = {
-    [K in keyof T]?: Field<T[K]> | Form<T[K]> | FormArray<T[K]>;
+    [K in keyof T]?: Field<T[K]> | Form<T[K]> | FormArray<ValuesOf<T[K]>>;
 };
 
 export interface Form<T> extends Penrose {
@@ -100,7 +102,7 @@ export function setFormTouched<T>(form: Form<T>) {
         });
 }
 
-export function setFormValues<T>(form: Form<T>, values: Partial<T>) {
+export function setFormValues<T>(form: Form<T>, values: Partial<T>): void {
     // TODO: typing problems
     Object
         .entries(values)

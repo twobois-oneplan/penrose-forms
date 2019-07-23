@@ -2,8 +2,7 @@
   "name": "penrose-core",
   "version": "0.0.0",
   "dependencies": {
-    "callbag-basics": "^3.0.1",
-    "callbag-subject": "^1.0.2"
+    "rxjs": "^6.5.2"
   },
   "devDependencies": {},
   "scripts": {

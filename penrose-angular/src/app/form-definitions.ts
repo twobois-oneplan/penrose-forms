@@ -100,8 +100,7 @@ export const createOrderForm = (employees: EmployeeDto[], products: ProductDto[]
         formType: 'order',
         fields: {
             name: createTextField({ label: 'Name', helpText: 'Das ist die Bestellungsnummer' }),
-            description: createTextareaField({ label: 'Beschreibung',
-                validators: [Required], rows: 5 }),
+            description: createTextareaField({ label: 'Beschreibung', validators: [Required], rows: 5 }),
             employee: createEmployeeDropdownField(employees),
             products: createProductOrderFormArray(products)
         }

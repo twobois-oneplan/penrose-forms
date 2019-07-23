@@ -4,8 +4,8 @@ import { Form, setFormValues, getFormValues } from './form';
 export interface FormArray<T> extends Penrose {
     type: 'formArray';
     formArrayType: string;
-    formFactory: () => Form<any>; // TODO: typing problems: T[] is not working!
-    forms: Form<any>[]; // TODO: typing problems: T[] is not working!
+    formFactory: () => Form<T>;
+    forms: Form<T>[];
 }
 
 export interface FormArrayConfig<T> {

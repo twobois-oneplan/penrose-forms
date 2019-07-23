@@ -48,7 +48,7 @@ const appRoutes: Routes = [
     PenroseBootstrapFormsModule, // Import Penrose Bootstrap Forms
     PenroseFormsModule.forRoot({ // Import Penrose Forms
         fieldMappings: [
-            bindField('text', BootstrapTextInputComponent), // TODO: strings as consts?
+            bindField('text', BootstrapTextInputComponent),
             bindField('textarea', BootstrapTextareaComponent),
             bindField('number', BootstrapNumberInputComponent),
             bindField('bool', BootstrapCheckboxComponent),

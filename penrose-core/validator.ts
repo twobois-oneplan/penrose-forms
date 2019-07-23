@@ -1,8 +1,7 @@
-import { Penrose } from "./penrose";
-import { Field } from "./field";
-import { Form } from "./form";
-
-import { forEach, pipe } from 'callbag-basics';
+import { Observable } from 'rxjs';
+import { Penrose } from './penrose';
+import { Field } from './field';
+import { Form } from './form';
 
 export interface Validator<T extends Penrose> {
     key: string;
@@ -61,13 +60,13 @@ export function addConditionalValidator<T, U>(config: ConditionalValidatorConfig
     }
 
     // Register callback
-    config.when.forEach((w) => pipe(w, forEach(onValueChange)));
+    config.when.forEach(w => w.subscribe(_ => onValueChange()));
 }
 
 export interface GlobalValidatorConfig<T, U> {
     on: Form<T>,
     influences: Field<U>,
-    when: any[], // TODO typing with valueChanges Stream type
+    when: Observable<any>[], // Must be any typed to support every possible Observable
     validators: Validator<Form<T>>[]
 }
 
@@ -81,5 +80,5 @@ export function addGlobalValidator<T, U>(config: GlobalValidatorConfig<T, U>): v
         });
     }
 
-    config.when.forEach((w) => pipe(w, forEach(onValueChange)));
+    config.when.forEach(w => w.subscribe(_ => onValueChange()));
 }

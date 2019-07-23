@@ -1,12 +1,11 @@
 import { Field } from "./field";
 import { Form } from "./form";
-
-import {forEach, pipe} from 'callbag-basics';
+import { Observable } from 'rxjs';
 
 export interface ConditionalDisableConfig<T, U> {
     on: Form<T>,
     influences: Field<U>,
-    when: any[], // TODO typing with valueChanges Stream type
+    when: Observable<any>[], // Must be any typed to support every possible Observable
     isDisabled: ((form: Form<T>) => boolean)[]
 }
 
@@ -16,5 +15,5 @@ export function addConditionalDisable<T, U>(config: ConditionalDisableConfig<T, 
     };
 
     // Register callback
-    config.when.forEach((w) => pipe(w, forEach(onValueChange)));
+    config.when.forEach(w => w.subscribe(_ => onValueChange()));
 }

@@ -1,7 +1,6 @@
+import { Observable } from 'rxjs';
 import { Validator } from './validator';
 import { Penrose } from './penrose';
-import { forEach, pipe } from 'callbag-basics';
-import makeSubject from 'callbag-subject';
 
 
 export interface FieldConfig<T> {
@@ -16,7 +15,7 @@ export interface FieldConfig<T> {
 
 export interface Field<T> extends Penrose {
     type: 'field';
-    fieldType: string; // TODO: is des leiwaund?
+    fieldType: string;
 
     getValue: () => T;
     setValue: (value: T) => void;
@@ -30,16 +29,15 @@ export interface Field<T> extends Penrose {
 
     errors: Object;
 
-    valueChange: any; // TODO: add typing
+    valueChange: Observable<T>;
     isTouched: boolean;
     isDisabled: boolean;
     isHidden: boolean;
 }
 
-// TODO: Naming?
-export function handleValidation<T>(field: Field<T>, value: T | null) {
-    const subject = makeSubject();
-    field.valueChange = subject;
+export function handleValidation<T>(field: Field<T>, value: T | null): void {
+    let subject = null;
+    field.valueChange = new Observable<T>(subscriber => subject = subscriber);
 
     let _value = value || null; // TODO: null ok?
 
@@ -48,7 +46,7 @@ export function handleValidation<T>(field: Field<T>, value: T | null) {
     field.setValue = (value: T) => {
         _value = value;
         field.validate();
-        subject(1, value);
+        subject.next(value);
     };
 }
 
@@ -85,9 +83,14 @@ export function hasErrors(field: Field<any>): boolean {
     return Object.keys(field.errors).length > 0;
 }
 
-export function getErrorMessages(field: Field<any>) {
+export interface ErrorMessage {
+    identifier: string,
+    message: string
+}
+
+export function getErrorMessages(field: Field<any>): ErrorMessage[] {
     return Object.keys(field.errors)
-            .map(m => ({ identifier: m, message: field.errors[m] }));
+        .map(m => ({ identifier: m, message: field.errors[m] }));
 }
 
 export function validateField(field: Field<any>): Object {

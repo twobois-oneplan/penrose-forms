@@ -1,3 +1,3 @@
-export interface Penrose { // TODO: naming?
+export interface Penrose {
     type: 'field' | 'form' | 'formArray';
 }
